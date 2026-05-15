@@ -538,3 +538,23 @@
   letter-spacing: 2px;
   font-weight: 700;
 }
+
+.astrolysis .formula-preview {
+  margin: 0.6rem 0;
+  padding: 0.55rem 0.7rem;
+  background: var(--astro-paper-3);
+  border: var(--astro-border);
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  line-height: 1.45;
+}
+.astrolysis .formula-preview code {
+  background: var(--astro-edge);
+  color: var(--astro-paper);
+  padding: 0 0.3rem;
+  font-family: var(--astro-mono);
+}
+.astrolysis .formula-preview strong {
+  color: var(--astro-acid);
+  font-weight: 700;
+}

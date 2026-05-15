@@ -4,6 +4,11 @@ import { ASTROLYSIS_CONST } from "./data-models.mjs";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2, ItemSheetV2 } = foundry.applications.sheets;
 
+/** Return the first currently-targeted Token (Ctrl+click on a token), or null. */
+function getSelectedTarget() {
+  return [...(game.user.targets ?? [])][0] ?? null;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Character Sheet                                                   */
 /* ------------------------------------------------------------------ */
@@ -14,16 +19,16 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     position: { width: 680, height: 760 },
     window: { resizable: true },
     actions: {
-      rollBase:    CharacterSheet.#onRollBase,
-      rollSkill:   CharacterSheet.#onRollSkill,
-      rollWeapon:  CharacterSheet.#onRollWeapon,
-      toggleTheme: CharacterSheet.#onToggleTheme,
-      editImage:   CharacterSheet.#onEditImage,
-      setTab:      CharacterSheet.#onSetTab,
-      addItem:     CharacterSheet.#onAddItem,
-      editItem:    CharacterSheet.#onEditItem,
-      deleteItem:  CharacterSheet.#onDeleteItem,
-      toggleEquip: CharacterSheet.#onToggleEquip
+      rollBase:     CharacterSheet.#onRollBase,
+      rollSkill:    CharacterSheet.#onRollSkill,
+      attackWeapon: CharacterSheet.#onAttackWeapon,
+      toggleTheme:  CharacterSheet.#onToggleTheme,
+      editImage:    CharacterSheet.#onEditImage,
+      setTab:       CharacterSheet.#onSetTab,
+      addItem:      CharacterSheet.#onAddItem,
+      editItem:     CharacterSheet.#onEditItem,
+      deleteItem:   CharacterSheet.#onDeleteItem,
+      toggleEquip:  CharacterSheet.#onToggleEquip
     },
     form: { submitOnChange: true, closeOnSubmit: false }
   };
@@ -32,7 +37,6 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     main: { template: "systems/astrolysis/templates/actor-character-sheet.hbs" }
   };
 
-  // Active tab state (per sheet instance).
   tabGroups = { primary: "inventory" };
 
   async _prepareContext(options) {
@@ -58,7 +62,7 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     if (this.element) this.element.dataset.theme = theme;
   }
 
-  /* --------------------- Theme + image --------------------- */
+  /* ----- Theme + image ----- */
 
   static async #onToggleTheme(event, target) {
     const current = game.settings.get("astrolysis", "theme");
@@ -79,14 +83,14 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     return fp.browse();
   }
 
-  /* --------------------- Tabs --------------------- */
+  /* ----- Tabs ----- */
 
   static #onSetTab(event, target) {
     this.tabGroups.primary = target.dataset.tab;
     this.render({ parts: ["main"] });
   }
 
-  /* --------------------- Items: add / edit / delete --------------------- */
+  /* ----- Item CRUD ----- */
 
   static async #onAddItem(event, target) {
     const type = target.dataset.itemType;
@@ -123,45 +127,95 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     await item.update({ "system.equipped": !item.system.equipped });
   }
 
-  /* --------------------- Rolls --------------------- */
+  /* ----- Rolls ----- */
 
+  // Raw Base check (no skill). Pool = base, die = d4 (untrained).
+  // If a target is selected, DC = 5 + target's same-stat defense.
   static async #onRollBase(event, target) {
     const baseKey = target.dataset.base;
     const dice = this.document.system.bases[baseKey] ?? 1;
-    const dc = 5;
+
+    let dc = 5;
+    let flavor = `${baseKey[0].toUpperCase()}${baseKey.slice(1)} check`;
+    const tgt = getSelectedTarget();
+    if (tgt?.actor?.system?.getDefenseDC) {
+      dc = tgt.actor.system.getDefenseDC(baseKey);
+      flavor += ` vs ${tgt.name}`;
+    }
+
     const result = await rollAstrolysisCheck(dice, 4, dc, {
-      actor: this.document,
-      flavor: `${baseKey[0].toUpperCase()}${baseKey.slice(1)} check`
+      actor: this.document, flavor
     });
     await this.document.setFlag("astrolysis", `lastRolls.${baseKey}`, {
       total: result.total, degree: result.degree, formula: result.formula
     });
   }
 
+  // Skill check. If skill.defense is set + a target is selected, use target's defense for DC.
   static async #onRollSkill(event, target) {
     const skill = this.document.items.get(target.dataset.itemId);
     if (!skill) return;
     const baseKey = skill.system.base;
     const dice = this.document.system.bases[baseKey] ?? 1;
     const die  = skill.system.dieSize;
-    const result = await rollAstrolysisCheck(dice, die, 5, {
-      actor: this.document,
-      flavor: `${skill.name} (${skill.system.training})`
+
+    let dc = 5;
+    let flavor = `${skill.name} (${skill.system.training})`;
+    const defenseStat = skill.system.defense;
+    const tgt = getSelectedTarget();
+    if (defenseStat && tgt?.actor?.system?.getDefenseDC) {
+      dc = tgt.actor.system.getDefenseDC(defenseStat);
+      flavor += ` vs ${tgt.name}'s ${defenseStat}`;
+    } else if (defenseStat) {
+      flavor += ` [no target — DC ${dc}]`;
+    }
+
+    const result = await rollAstrolysisCheck(dice, die, dc, {
+      actor: this.document, flavor
     });
     await this.document.setFlag("astrolysis", `lastRolls.${baseKey}`, {
       total: result.total, degree: result.degree, formula: result.formula, via: skill.name
     });
   }
 
-  static async #onRollWeapon(event, target) {
+  // Attack with a weapon. Damage = {actor.base}d{weapon.die} + bonus.
+  // No defense roll per rules — attacks always deal damage.
+  // Auto-apply to selected target if user has owner permission.
+  static async #onAttackWeapon(event, target) {
     const weapon = this.document.items.get(target.dataset.itemId);
     if (!weapon) return;
-    const bonus = weapon.system.damageBonus ? ` + ${weapon.system.damageBonus}` : "";
-    const formula = `${weapon.system.damageDice}${bonus}`;
-    const roll = await new Roll(formula, this.document.getRollData()).evaluate();
+    const baseKey = weapon.system.base;
+    const dice = this.document.system.bases[baseKey] ?? 1;
+    const die  = weapon.system.dieSize;
+    const bonus = weapon.system.damageBonus || 0;
+    const formula = `${dice}d${die}${bonus ? ` + ${bonus}` : ""}`;
+
+    const tgt = getSelectedTarget();
+    const targetLabel = tgt ? ` &rarr; ${tgt.name}` : "";
+
+    const roll = await new Roll(formula).evaluate();
+    const damage = roll.total;
+
+    let applyNote = "";
+    if (tgt?.actor) {
+      const canModify = game.user.isGM || tgt.actor.isOwner;
+      if (canModify) {
+        const oldHp = tgt.actor.system.health?.value ?? 0;
+        const newHp = Math.max(0, oldHp - damage);
+        try {
+          await tgt.actor.update({ "system.health.value": newHp });
+          applyNote = `<br/><em>${tgt.name}: ${oldHp} &rarr; ${newHp} HP</em>`;
+        } catch (e) {
+          applyNote = `<br/><em>(could not apply damage: ${e.message})</em>`;
+        }
+      } else {
+        applyNote = `<br/><em>(GM must apply damage manually)</em>`;
+      }
+    }
+
     await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: this.document }),
-      flavor: `${weapon.name} — damage`
+      flavor: `<strong>${weapon.name}</strong>${targetLabel} &mdash; Damage: <strong>${damage}</strong>${applyNote}`
     });
   }
 }

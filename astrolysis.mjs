@@ -5,7 +5,6 @@ import { rollAstrolysisCheck } from "./module/roll.mjs";
 Hooks.once("init", () => {
   console.log("Astrolysis | Initializing system");
 
-  // --- Client setting: theme ---
   game.settings.register("astrolysis", "theme", {
     name: "Astrolysis Theme",
     hint: "Visual theme for Astrolysis sheets.",
@@ -22,14 +21,12 @@ Hooks.once("init", () => {
     }
   });
 
-  // --- DataModels ---
   CONFIG.Actor.dataModels.character = CharacterData;
   CONFIG.Item.dataModels.archetype  = ArchetypeData;
   CONFIG.Item.dataModels.skill      = SkillData;
   CONFIG.Item.dataModels.weapon     = WeaponData;
   CONFIG.Item.dataModels.inventory  = InventoryData;
 
-  // --- Sheets ---
   const sheetsApi = foundry.applications.apps.DocumentSheetConfig;
 
   sheetsApi.unregisterSheet(Actor, "core", foundry.applications.sheets.ActorSheetV2);
@@ -52,12 +49,18 @@ Hooks.once("init", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  Combat: clear lastRolls on every actor when a new ROUND begins.   */
-/*  (Per-stat memory now persists across turns within the round.)     */
+/*  Combat: initiative re-rolls every round; last-rolls clear too     */
 /* ------------------------------------------------------------------ */
 
-Hooks.on("combatRound", async (combat, updateData, options) => {
-  if (!game.user.isGM) return;
+async function rerollInitiative(combat) {
+  if (!combat) return;
+  // resetAll() clears initiative on every combatant; rollAll() rolls fresh
+  // using the system.json `initiative` formula (currently "1d20 + @focus").
+  await combat.resetAll();
+  await combat.rollAll();
+}
+
+async function clearLastRollsForAll(combat) {
   for (const c of combat.combatants) {
     const actor = c.actor;
     if (!actor) continue;
@@ -65,6 +68,19 @@ Hooks.on("combatRound", async (combat, updateData, options) => {
       await actor.unsetFlag("astrolysis", "lastRolls");
     }
   }
+}
+
+// On the very first round of a combat (combat starts).
+Hooks.on("combatStart", async (combat) => {
+  if (!game.user.isGM) return;
+  await rerollInitiative(combat);
+});
+
+// On every subsequent round change.
+Hooks.on("combatRound", async (combat, updateData, options) => {
+  if (!game.user.isGM) return;
+  await clearLastRollsForAll(combat);
+  await rerollInitiative(combat);
 });
 
 /* ------------------------------------------------------------------ */
@@ -76,11 +92,10 @@ Hooks.once("ready", () => {
   if (game.i18n.localize("astrolysis.Health") === "astrolysis.Health") {
     console.warn(
       "Astrolysis | Localization keys are NOT resolving. " +
-      "Foundry has cached a stale lang state. Fix: 'Return to Setup' and re-enter the world, " +
-      "or do a hard reload (Ctrl+F5)."
+      "Return to Setup and re-enter the world, or hard-reload (Ctrl+F5)."
     );
     ui.notifications?.warn(
-      "Astrolysis: labels not loading. Return to Setup and re-enter the world to refresh lang/en.json."
+      "Astrolysis: labels not loading. Return to Setup and re-enter the world."
     );
   }
 });

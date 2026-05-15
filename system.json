@@ -2,7 +2,7 @@
   "id": "astrolysis",
   "title": "Astrolysis",
   "description": "Dice-pool sci-fi/psionic RPG. Roll {Base}d{Skill die} vs DC = 5 + target stat.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "compatibility": {
     "minimum": "14",
     "verified": "14"

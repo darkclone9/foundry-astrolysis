@@ -9,7 +9,7 @@
     </div>
     <div class="header-fields">
       <div class="name-row">
-        <input type="text" name="name" value="{{item.name}}" placeholder="{{localize 'astrolysis.Name'}}" />
+        <input type="text" name="name" value="{{item.name}}" placeholder="Name" />
         <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="Toggle theme">
           {{#if (eq theme "dark")}}&#x2600;{{else}}&#x263E;{{/if}}
         </button>
@@ -19,7 +19,7 @@
 
   <section class="sheet-body">
     <div class="stat-row">
-      <label>{{localize "astrolysis.Base"}}</label>
+      <label>Base</label>
       <select name="system.base">
         {{#each const.BASE_KEYS as |k|}}
         <option value="{{k}}" {{#if (eq k ../system.base)}}selected{{/if}}>{{k}}</option>
@@ -27,15 +27,31 @@
       </select>
     </div>
     <div class="stat-row">
-      <label>{{localize "astrolysis.Training"}}</label>
+      <label>Training</label>
       <select name="system.training">
         {{#each const.TRAINING_DIE as |size key|}}
         <option value="{{key}}" {{#if (eq key ../system.training)}}selected{{/if}}>{{key}} (d{{size}})</option>
         {{/each}}
       </select>
     </div>
+    <div class="stat-row">
+      <label>Targets Defense</label>
+      <select name="system.defense">
+        <option value="" {{#if (eq "" system.defense)}}selected{{/if}}>&mdash; static DC 5 &mdash;</option>
+        {{#each const.BASE_KEYS as |k|}}
+        <option value="{{k}}" {{#if (eq k ../system.defense)}}selected{{/if}}>{{k}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="formula-preview">
+      {{#if system.defense}}
+        Rolls vs a target's <strong>{{system.defense}}</strong> defense (DC = 5 + target's {{system.defense}}). Select a token before rolling.
+      {{else}}
+        Static DC of 5 (no target needed).
+      {{/if}}
+    </div>
     <div class="notes">
-      <label>{{localize "astrolysis.Description"}}</label>
+      <label>Description</label>
       <textarea name="system.description">{{system.description}}</textarea>
     </div>
   </section>

@@ -18,6 +18,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         psyche:    base(),
         focus:     base()
       }),
+      // Optional per-stat defense bonus (from armor, augments, etc.).
+      defenseBonus: new fields.SchemaField({
+        strength:  new fields.NumberField({ initial: 0, integer: true, nullable: false }),
+        dexterity: new fields.NumberField({ initial: 0, integer: true, nullable: false }),
+        stamina:   new fields.NumberField({ initial: 0, integer: true, nullable: false }),
+        psyche:    new fields.NumberField({ initial: 0, integer: true, nullable: false }),
+        focus:     new fields.NumberField({ initial: 0, integer: true, nullable: false })
+      }),
       health: new fields.SchemaField({
         value: new fields.NumberField({ initial: 10, min: 0, integer: true, nullable: false }),
         max:   new fields.NumberField({ initial: 10, min: 0, integer: true, nullable: false })
@@ -35,12 +43,24 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
     this.movement    = 5 * this.bases.stamina;
     this.madness.max = 10 + (2 * this.bases.psyche);
     if (this.madness.value > this.madness.max) this.madness.value = this.madness.max;
+
+    // Compute defenses (each = base + bonus). Used as target numbers.
+    this.defenses = {};
+    for (const key of Object.keys(this.bases)) {
+      this.defenses[key] = (this.bases[key] ?? 0) + (this.defenseBonus?.[key] ?? 0);
+    }
+  }
+
+  /** DC to roll AGAINST this actor on a given defense stat. */
+  getDefenseDC(stat) {
+    return 5 + (this.defenses?.[stat] ?? this.bases?.[stat] ?? 0);
   }
 
   getRollData() {
     return {
       ...this.bases,
       bases: { ...this.bases },
+      defenses: { ...(this.defenses ?? {}) },
       health: { ...this.health },
       madness: { ...this.madness },
       level: this.level,
@@ -74,6 +94,8 @@ export class SkillData extends foundry.abstract.TypeDataModel {
     return {
       base:        new fields.StringField({ choices: BASE_KEYS, initial: "strength" }),
       training:    new fields.StringField({ choices: Object.keys(TRAINING_DIE), initial: "untrained" }),
+      // Which target defense this skill rolls against. Empty = static DC 5.
+      defense:     new fields.StringField({ choices: ["", ...BASE_KEYS], initial: "", blank: true }),
       description: new fields.HTMLField({ initial: "" })
     };
   }
@@ -84,14 +106,14 @@ export class WeaponData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       base:        new fields.StringField({ choices: BASE_KEYS, initial: "strength" }),
-      damageDice:  new fields.StringField({ initial: "1d6" }),
+      training:    new fields.StringField({ choices: Object.keys(TRAINING_DIE), initial: "untrained" }),
       damageBonus: new fields.NumberField({ initial: 0, integer: true, nullable: false }),
       description: new fields.HTMLField({ initial: "" })
     };
   }
+  get dieSize() { return TRAINING_DIE[this.training] ?? 4; }
 }
 
-/** Generic loot / gear / consumables — the catch-all bag item. */
 export class InventoryData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {

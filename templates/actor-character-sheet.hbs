@@ -108,7 +108,7 @@
         {{#each skills as |s|}}
         <li>
           <span class="item-name">{{s.name}}</span>
-          <span class="item-sub">{{s.system.base}} &middot; {{s.system.training}}</span>
+          <span class="item-sub">{{s.system.base}}d{{s.system.dieSize}}{{#if s.system.defense}} &middot; vs {{s.system.defense}}{{/if}}</span>
           <button type="button" data-action="rollSkill"   data-item-id="{{s.id}}">Roll</button>
           <button type="button" class="icon" data-action="editItem"   data-item-id="{{s.id}}" data-tooltip="Edit">&#x270E;</button>
           <button type="button" class="icon danger" data-action="deleteItem" data-item-id="{{s.id}}" data-tooltip="Delete">&#x2715;</button>
@@ -130,8 +130,8 @@
         {{#each weapons as |w|}}
         <li>
           <span class="item-name">{{w.name}}</span>
-          <span class="item-sub">{{w.system.damageDice}}{{#if w.system.damageBonus}}+{{w.system.damageBonus}}{{/if}} &middot; {{w.system.base}}</span>
-          <button type="button" data-action="rollWeapon"  data-item-id="{{w.id}}">Damage</button>
+          <span class="item-sub">{{w.system.base}}d{{w.system.dieSize}}{{#if w.system.damageBonus}}+{{w.system.damageBonus}}{{/if}}</span>
+          <button type="button" data-action="attackWeapon" data-item-id="{{w.id}}">Attack</button>
           <button type="button" class="icon" data-action="editItem"   data-item-id="{{w.id}}" data-tooltip="Edit">&#x270E;</button>
           <button type="button" class="icon danger" data-action="deleteItem" data-item-id="{{w.id}}" data-tooltip="Delete">&#x2715;</button>
         </li>

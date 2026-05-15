@@ -9,7 +9,7 @@
     </div>
     <div class="header-fields">
       <div class="name-row">
-        <input type="text" name="name" value="{{item.name}}" placeholder="{{localize 'astrolysis.Name'}}" />
+        <input type="text" name="name" value="{{item.name}}" placeholder="Name" />
         <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="Toggle theme">
           {{#if (eq theme "dark")}}&#x2600;{{else}}&#x263E;{{/if}}
         </button>
@@ -19,7 +19,7 @@
 
   <section class="sheet-body">
     <div class="stat-row">
-      <label>{{localize "astrolysis.Base"}}</label>
+      <label>Base</label>
       <select name="system.base">
         {{#each const.BASE_KEYS as |k|}}
         <option value="{{k}}" {{#if (eq k ../system.base)}}selected{{/if}}>{{k}}</option>
@@ -27,15 +27,23 @@
       </select>
     </div>
     <div class="stat-row">
-      <label>{{localize "astrolysis.DamageDice"}}</label>
-      <input type="text" name="system.damageDice" value="{{system.damageDice}}" placeholder="1d6" />
+      <label>Training</label>
+      <select name="system.training">
+        {{#each const.TRAINING_DIE as |size key|}}
+        <option value="{{key}}" {{#if (eq key ../system.training)}}selected{{/if}}>{{key}} (d{{size}})</option>
+        {{/each}}
+      </select>
     </div>
     <div class="stat-row">
-      <label>{{localize "astrolysis.DamageBonus"}}</label>
+      <label>Damage Bonus</label>
       <input type="number" name="system.damageBonus" value="{{system.damageBonus}}" />
     </div>
+    <div class="formula-preview">
+      Damage formula: <strong>{Base}d{die} + bonus</strong>
+      &mdash; e.g. with Strength 3 + d{{system.dieSize}}{{#if system.damageBonus}} + {{system.damageBonus}}{{/if}}: <code>3d{{system.dieSize}}{{#if system.damageBonus}}+{{system.damageBonus}}{{/if}}</code>
+    </div>
     <div class="notes">
-      <label>{{localize "astrolysis.Description"}}</label>
+      <label>Description</label>
       <textarea name="system.description">{{system.description}}</textarea>
     </div>
   </section>
