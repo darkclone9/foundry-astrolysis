@@ -1,0 +1,42 @@
+<form class="astrolysis skill-sheet">
+  <header class="sheet-header">
+    <div class="profile-wrapper" data-action="editImage" data-tooltip="Change image">
+      <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" />
+      <div class="profile-overlay">
+        <span class="upload-icon">&#x21E7;</span>
+        <span class="upload-label">Upload</span>
+      </div>
+    </div>
+    <div class="header-fields">
+      <div class="name-row">
+        <input type="text" name="name" value="{{item.name}}" placeholder="{{localize 'astrolysis.Name'}}" />
+        <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="Toggle theme">
+          {{#if (eq theme "dark")}}&#x2600;{{else}}&#x263E;{{/if}}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet-body">
+    <div class="stat-row">
+      <label>{{localize "astrolysis.Base"}}</label>
+      <select name="system.base">
+        {{#each const.BASE_KEYS as |k|}}
+        <option value="{{k}}" {{#if (eq k ../system.base)}}selected{{/if}}>{{k}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="stat-row">
+      <label>{{localize "astrolysis.Training"}}</label>
+      <select name="system.training">
+        {{#each const.TRAINING_DIE as |size key|}}
+        <option value="{{key}}" {{#if (eq key ../system.training)}}selected{{/if}}>{{key}} (d{{size}})</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="notes">
+      <label>{{localize "astrolysis.Description"}}</label>
+      <textarea name="system.description">{{system.description}}</textarea>
+    </div>
+  </section>
+</form>

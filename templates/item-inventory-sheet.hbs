@@ -1,0 +1,38 @@
+<form class="astrolysis inventory-sheet">
+  <header class="sheet-header">
+    <div class="profile-wrapper" data-action="editImage" data-tooltip="Change image">
+      <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" />
+      <div class="profile-overlay">
+        <span class="upload-icon">&#x21E7;</span>
+        <span class="upload-label">Upload</span>
+      </div>
+    </div>
+    <div class="header-fields">
+      <div class="name-row">
+        <input type="text" name="name" value="{{item.name}}" placeholder="Name" />
+        <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="Toggle theme">
+          {{#if (eq theme "dark")}}&#x2600;{{else}}&#x263E;{{/if}}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet-body">
+    <div class="stat-row">
+      <label>Quantity</label>
+      <input type="number" name="system.quantity" value="{{system.quantity}}" min="0" />
+    </div>
+    <div class="stat-row">
+      <label>Weight (lb)</label>
+      <input type="number" name="system.weight" value="{{system.weight}}" step="0.1" min="0" />
+    </div>
+    <div class="stat-row">
+      <label>Equipped</label>
+      <input type="checkbox" name="system.equipped" {{checked system.equipped}} />
+    </div>
+    <div class="notes">
+      <label>Description</label>
+      <textarea name="system.description">{{system.description}}</textarea>
+    </div>
+  </section>
+</form>

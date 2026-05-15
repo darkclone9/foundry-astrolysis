@@ -1,0 +1,40 @@
+{
+  "id": "astrolysis",
+  "title": "Astrolysis",
+  "description": "Dice-pool sci-fi/psionic RPG. Roll {Base}d{Skill die} vs DC = 5 + target stat.",
+  "version": "0.2.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "authors": [
+    { "name": "Gary" }
+  ],
+  "esmodules": ["astrolysis.mjs"],
+  "styles": ["styles/system.css"],
+  "languages": [
+    { "lang": "en", "name": "English", "path": "lang/en.json" }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": { "htmlFields": ["biography"] }
+    },
+    "Item": {
+      "archetype": { "htmlFields": ["description"] },
+      "skill":     { "htmlFields": ["description"] },
+      "weapon":    { "htmlFields": ["description"] },
+      "inventory": { "htmlFields": ["description"] }
+    }
+  },
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "madness",
+  "grid": { "distance": 5, "units": "ft" },
+  "initiative": "1d20 + @focus",
+
+  "url": "https://github.com/darkclone9/foundry-astrolysis",
+  "manifest": "https://github.com/darkclone9/foundry-astrolysis/raw/main/system.json",
+  "download": "https://github.com/darkclone9/foundry-astrolysis/archive/refs/heads/main.zip",
+  "bugs": "https://github.com/darkclone9/foundry-astrolysis/issues",
+  "readme": "https://github.com/darkclone9/foundry-astrolysis/blob/main/README.md",
+  "license": "https://github.com/darkclone9/foundry-astrolysis/blob/main/LICENSE"
+}

@@ -1,0 +1,174 @@
+<form class="astrolysis character-sheet">
+
+  {{!-- ===== HEADER (sticky) ===== --}}
+  <header class="sheet-header">
+    <div class="profile-wrapper" data-action="editImage" data-tooltip="Change image">
+      <img class="profile-img" src="{{actor.img}}" alt="{{actor.name}}" />
+      <div class="profile-overlay">
+        <span class="upload-icon">&#x21E7;</span>
+        <span class="upload-label">Upload</span>
+      </div>
+    </div>
+
+    <div class="header-fields">
+      <div class="name-row">
+        <input type="text" name="name" value="{{actor.name}}" placeholder="Name" />
+        <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="Toggle theme">
+          {{#if (eq theme "dark")}}&#x2600;{{else}}&#x263E;{{/if}}
+        </button>
+      </div>
+
+      <div class="header-row">
+        <label>Level</label>
+        <input type="number" name="system.level" value="{{system.level}}" min="1" />
+        <span class="movement-label">Movement: <strong>{{system.movement}} ft</strong></span>
+      </div>
+
+      <div class="resource health">
+        <label>Health</label>
+        <input type="number" name="system.health.value" value="{{system.health.value}}" />
+        <span class="sep">/</span>
+        <input type="number" name="system.health.max" value="{{system.health.max}}" />
+      </div>
+      <div class="resource madness">
+        <label>Madness</label>
+        <input type="number" name="system.madness.value" value="{{system.madness.value}}" />
+        <span class="sep">/</span>
+        <input type="number" name="system.madness.max" value="{{system.madness.max}}" disabled />
+      </div>
+    </div>
+  </header>
+
+  {{!-- ===== BASES (always visible) ===== --}}
+  <section class="bases">
+    <h2>Bases</h2>
+    <div class="base-grid">
+      {{#each baseKeys as |key|}}
+      <div class="base">
+        <label>{{key}}</label>
+        <input type="number" name="system.bases.{{key}}" value="{{lookup ../system.bases key}}" min="0" />
+        {{#with (lookup ../lastRolls key) as |lr|}}
+          <div class="last-roll degree-{{lr.degree}}">
+            <span class="lr-label">Last Roll</span>
+            <span class="lr-total">{{lr.total}}</span>
+          </div>
+        {{/with}}
+        <button type="button" data-action="rollBase" data-base="{{key}}">Roll</button>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  {{!-- ===== TAB STRIP ===== --}}
+  <nav class="tabs">
+    <button type="button" class="tab {{#if (eq activeTab 'inventory')}}active{{/if}}"  data-action="setTab" data-tab="inventory">Inventory</button>
+    <button type="button" class="tab {{#if (eq activeTab 'skills')}}active{{/if}}"     data-action="setTab" data-tab="skills">Skills</button>
+    <button type="button" class="tab {{#if (eq activeTab 'weapons')}}active{{/if}}"    data-action="setTab" data-tab="weapons">Weapons</button>
+    <button type="button" class="tab {{#if (eq activeTab 'archetypes')}}active{{/if}}" data-action="setTab" data-tab="archetypes">Archetypes</button>
+  </nav>
+
+  {{!-- ===== TAB CONTENT ===== --}}
+  <section class="tab-content">
+
+    {{!-- ---- Inventory ---- --}}
+    {{#if (eq activeTab "inventory")}}
+    <div class="tab-pane inventory-pane">
+      <div class="tab-actions">
+        <button type="button" data-action="addItem" data-item-type="inventory">+ Add Inventory</button>
+      </div>
+      <ul class="item-list">
+        {{#each inventory as |i|}}
+        <li>
+          <span class="item-name">{{i.name}}</span>
+          <span class="item-sub">
+            x{{i.system.quantity}}
+            {{#if i.system.weight}}&middot; {{i.system.weight}} lb{{/if}}
+            {{#if i.system.equipped}}&middot; <em>equipped</em>{{/if}}
+          </span>
+          <button type="button" class="icon"
+                  data-action="toggleEquip" data-item-id="{{i.id}}"
+                  data-tooltip="Toggle equipped">{{#if i.system.equipped}}&#x25A0;{{else}}&#x25A1;{{/if}}</button>
+          <button type="button" class="icon" data-action="editItem"   data-item-id="{{i.id}}" data-tooltip="Edit">&#x270E;</button>
+          <button type="button" class="icon danger" data-action="deleteItem" data-item-id="{{i.id}}" data-tooltip="Delete">&#x2715;</button>
+        </li>
+        {{else}}
+        <li class="empty">No inventory items.</li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/if}}
+
+    {{!-- ---- Skills ---- --}}
+    {{#if (eq activeTab "skills")}}
+    <div class="tab-pane skills-pane">
+      <div class="tab-actions">
+        <button type="button" data-action="addItem" data-item-type="skill">+ Add Skill</button>
+      </div>
+      <ul class="item-list">
+        {{#each skills as |s|}}
+        <li>
+          <span class="item-name">{{s.name}}</span>
+          <span class="item-sub">{{s.system.base}} &middot; {{s.system.training}}</span>
+          <button type="button" data-action="rollSkill"   data-item-id="{{s.id}}">Roll</button>
+          <button type="button" class="icon" data-action="editItem"   data-item-id="{{s.id}}" data-tooltip="Edit">&#x270E;</button>
+          <button type="button" class="icon danger" data-action="deleteItem" data-item-id="{{s.id}}" data-tooltip="Delete">&#x2715;</button>
+        </li>
+        {{else}}
+        <li class="empty">No skills.</li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/if}}
+
+    {{!-- ---- Weapons ---- --}}
+    {{#if (eq activeTab "weapons")}}
+    <div class="tab-pane weapons-pane">
+      <div class="tab-actions">
+        <button type="button" data-action="addItem" data-item-type="weapon">+ Add Weapon</button>
+      </div>
+      <ul class="item-list">
+        {{#each weapons as |w|}}
+        <li>
+          <span class="item-name">{{w.name}}</span>
+          <span class="item-sub">{{w.system.damageDice}}{{#if w.system.damageBonus}}+{{w.system.damageBonus}}{{/if}} &middot; {{w.system.base}}</span>
+          <button type="button" data-action="rollWeapon"  data-item-id="{{w.id}}">Damage</button>
+          <button type="button" class="icon" data-action="editItem"   data-item-id="{{w.id}}" data-tooltip="Edit">&#x270E;</button>
+          <button type="button" class="icon danger" data-action="deleteItem" data-item-id="{{w.id}}" data-tooltip="Delete">&#x2715;</button>
+        </li>
+        {{else}}
+        <li class="empty">No weapons.</li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/if}}
+
+    {{!-- ---- Archetypes ---- --}}
+    {{#if (eq activeTab "archetypes")}}
+    <div class="tab-pane archetypes-pane">
+      <div class="tab-actions">
+        <button type="button" data-action="addItem" data-item-type="archetype">+ Add Archetype</button>
+      </div>
+      <ul class="item-list">
+        {{#each archetypes as |a|}}
+        <li>
+          <span class="item-name">{{a.name}}</span>
+          <span class="item-sub">{{a.system.category}}</span>
+          <button type="button" class="icon" data-action="editItem"   data-item-id="{{a.id}}" data-tooltip="Edit">&#x270E;</button>
+          <button type="button" class="icon danger" data-action="deleteItem" data-item-id="{{a.id}}" data-tooltip="Delete">&#x2715;</button>
+        </li>
+        {{else}}
+        <li class="empty">No archetypes.</li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/if}}
+
+  </section>
+
+  {{!-- ===== BIOGRAPHY ===== --}}
+  <section class="biography">
+    <h2>Biography</h2>
+    <textarea name="system.biography">{{system.biography}}</textarea>
+  </section>
+
+</form>
