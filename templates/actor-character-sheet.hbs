@@ -179,7 +179,7 @@
         </header>
         <div class="base-grid">
           {{#each baseEntries as |base|}}
-          <article class="base-card{{#if base.substats.length}} has-substats{{/if}}">
+          <article class="base-card">
             <label for="{{../actor.id}}-base-{{base.key}}">{{base.label}}</label>
             <input id="{{../actor.id}}-base-{{base.key}}" type="number" name="system.bases.{{base.key}}" value="{{base.value}}" min="0" />
             {{#with base.lastRoll as |lr|}}
@@ -203,51 +203,60 @@
               <i class="fa-solid fa-dice-d20"></i>
               <span>{{@root.labels.Roll}} {{base.value}}d{{base.dieSize}}</span>
             </button>
-
-            {{#if base.substats.length}}
-            <section class="substats">
-              <header class="substats-header">{{@root.labels.StaminaSubstats}}</header>
-              {{#each base.substats as |sub|}}
-              <article class="substat-card">
-                <label for="{{@root.actor.id}}-substat-{{sub.key}}">{{sub.label}}</label>
-                <div class="substat-row">
-                  <input id="{{@root.actor.id}}-substat-{{sub.key}}"
-                         type="number"
-                         name="system.staminaSubstats.{{sub.key}}"
-                         value="{{sub.modifier}}"
-                         step="1"
-                         data-tooltip="{{@root.labels.SubstatModifierTooltip}}" />
-                  <span class="substat-arrow">&rarr;</span>
-                  <span class="substat-dice" data-tooltip="{{@root.labels.SubstatDiceTooltip}}">{{sub.diceCount}}</span>
-                </div>
-                {{#with sub.lastRoll as |lr|}}
-                <div class="last-roll {{#if lr.degree}}degree-{{lr.degree}}{{/if}}">
-                  <span>{{@root.labels.LastRoll}}</span>
-                  <strong>{{lr.total}}</strong>
-                </div>
-                {{/with}}
-                <label class="die-row" for="{{@root.actor.id}}-substat-{{sub.key}}-die" data-tooltip="{{@root.labels.SelectDieSize}}">
-                  <span class="die-label">{{@root.labels.DieSize}}</span>
-                  <select id="{{@root.actor.id}}-substat-{{sub.key}}-die"
-                          name="flags.astrolysis.baseDieSizes.{{sub.key}}"
-                          data-dtype="Number"
-                          class="die-selector">
-                    {{#each sub.dieOptions as |opt|}}
-                    <option value="{{opt.size}}" {{#if opt.selected}}selected{{/if}}>d{{opt.size}}</option>
-                    {{/each}}
-                  </select>
-                </label>
-                <button type="button" data-action="rollBase" data-base="{{sub.key}}">
-                  <i class="fa-solid fa-dice-d20"></i>
-                  <span>{{@root.labels.Roll}} {{sub.diceCount}}d{{sub.dieSize}}</span>
-                </button>
-              </article>
-              {{/each}}
-            </section>
-            {{/if}}
           </article>
           {{/each}}
         </div>
+
+        {{#if substats.length}}
+        <section class="substats-panel" aria-label="{{labels.StaminaSubstats}}">
+          <header class="substats-heading">
+            <h3>{{labels.StaminaSubstats}}</h3>
+            <span class="substats-hint">Modifier &times; Stamina &rarr; effective dice</span>
+          </header>
+          <div class="substat-grid">
+            {{#each substats as |sub|}}
+            <article class="substat-card">
+              <header class="substat-head">
+                <span class="substat-name">{{sub.label}}</span>
+                <span class="substat-dice" data-tooltip="{{@root.labels.SubstatDiceTooltip}}">{{sub.diceCount}}d{{sub.dieSize}}</span>
+              </header>
+              <div class="substat-mod">
+                <label for="{{@root.actor.id}}-substat-{{sub.key}}">Mod</label>
+                <input id="{{@root.actor.id}}-substat-{{sub.key}}"
+                       type="number"
+                       name="system.staminaSubstats.{{sub.key}}"
+                       value="{{sub.modifier}}"
+                       step="1"
+                       min="-5"
+                       max="5"
+                       data-tooltip="{{@root.labels.SubstatModifierTooltip}}" />
+              </div>
+              {{#with sub.lastRoll as |lr|}}
+              <div class="last-roll {{#if lr.degree}}degree-{{lr.degree}}{{/if}}">
+                <span>{{@root.labels.LastRoll}}</span>
+                <strong>{{lr.total}}</strong>
+              </div>
+              {{/with}}
+              <label class="die-row" for="{{@root.actor.id}}-substat-{{sub.key}}-die" data-tooltip="{{@root.labels.SelectDieSize}}">
+                <span class="die-label">{{@root.labels.DieSize}}</span>
+                <select id="{{@root.actor.id}}-substat-{{sub.key}}-die"
+                        name="flags.astrolysis.baseDieSizes.{{sub.key}}"
+                        data-dtype="Number"
+                        class="die-selector">
+                  {{#each sub.dieOptions as |opt|}}
+                  <option value="{{opt.size}}" {{#if opt.selected}}selected{{/if}}>d{{opt.size}}</option>
+                  {{/each}}
+                </select>
+              </label>
+              <button type="button" data-action="rollBase" data-base="{{sub.key}}">
+                <i class="fa-solid fa-dice-d20"></i>
+                <span>{{@root.labels.Roll}} {{sub.diceCount}}d{{sub.dieSize}}</span>
+              </button>
+            </article>
+            {{/each}}
+          </div>
+        </section>
+        {{/if}}
       </section>
       {{/if}}
 

@@ -673,7 +673,10 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       };
     });
 
-    // Primary bases (stamina, psyche, focus). Only Stamina nests sub-stats.
+    // Primary bases (stamina, psyche, focus) — rendered as a clean row of
+    // 3 same-size cards. Sub-stats live in a separate panel beneath the grid
+    // (see ctx.substats below) so the Stamina card doesn't have to balloon
+    // to hold them.
     ctx.baseEntries = ASTROLYSIS_CONST.PRIMARY_BASES.map(key => {
       const value = this.document.system.bases?.[key] ?? 0;
       const dieSize = Number(baseDieFlags[key]) || 4;
@@ -685,10 +688,10 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         defense: this.document.system.defenses?.[key] ?? 0,
         lastRoll: lastRolls[key],
         dieSize,
-        dieOptions: buildDieOptions(dieSize),
-        substats: key === "stamina" ? substatEntries : []
+        dieOptions: buildDieOptions(dieSize)
       };
     });
+    ctx.substats = substatEntries;
     ctx.lastRolls  = lastRolls;
     ctx.theme      = game.settings.get("astrolysis", "theme");
     ctx.activeTab  = activeTab;
