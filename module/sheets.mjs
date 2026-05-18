@@ -746,6 +746,21 @@ export class CharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     super._onRender?.(context, options);
     const theme = game.settings.get("astrolysis", "theme");
     if (this.element) this.element.dataset.theme = theme;
+
+    // Wire die-size selectors: form binding via name="flags.*" is unreliable
+    // in ApplicationV2 (the selected value doesn't always reach the flag),
+    // so we attach an explicit change listener that calls setFlag directly.
+    // The select's data-stat-key attribute identifies which base/sub-stat
+    // it's controlling.
+    this.element?.querySelectorAll(".die-selector[data-stat-key]").forEach(sel => {
+      sel.addEventListener("change", async (event) => {
+        const target = event.currentTarget;
+        const statKey = target.dataset.statKey;
+        if (!statKey) return;
+        const size = Number(target.value) || 4;
+        await this.document.setFlag("astrolysis", `baseDieSizes.${statKey}`, size);
+      });
+    });
   }
 
   /* ----- Theme + image ----- */

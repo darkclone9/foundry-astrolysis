@@ -191,7 +191,7 @@
             <label class="die-row" for="{{../actor.id}}-base-{{base.key}}-die" data-tooltip="{{@root.labels.SelectDieSize}}">
               <span class="die-label">{{@root.labels.DieSize}}</span>
               <select id="{{../actor.id}}-base-{{base.key}}-die"
-                      name="flags.astrolysis.baseDieSizes.{{base.key}}"
+                      data-stat-key="{{base.key}}"
                       data-dtype="Number"
                       class="die-selector">
                 {{#each base.dieOptions as |opt|}}
@@ -240,7 +240,7 @@
               <label class="die-row" for="{{@root.actor.id}}-substat-{{sub.key}}-die" data-tooltip="{{@root.labels.SelectDieSize}}">
                 <span class="die-label">{{@root.labels.DieSize}}</span>
                 <select id="{{@root.actor.id}}-substat-{{sub.key}}-die"
-                        name="flags.astrolysis.baseDieSizes.{{sub.key}}"
+                        data-stat-key="{{sub.key}}"
                         data-dtype="Number"
                         class="die-selector">
                   {{#each sub.dieOptions as |opt|}}

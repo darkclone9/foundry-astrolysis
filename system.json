@@ -2,7 +2,7 @@
   "id": "astrolysis",
   "title": "Astrolysis",
   "description": "Dice-pool sci-fi/psionic RPG. Roll a base-sized pool using the referenced base or skill die.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
