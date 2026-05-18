@@ -1,0 +1,31 @@
+{
+  "name": "Void-Touched Savant",
+  "type": "archetype",
+  "system": {
+    "slot": "archetype",
+    "category": "psionic",
+    "healthBonus": 0,
+    "description": "A mind opened by the impossible geometry between stars. Void-Touched Savants read pressure changes in thought, carry a sliver of dead-space calm, and can overchannel psyche at real personal risk.",
+    "statBonuses": {
+      "strength": 0,
+      "dexterity": 0,
+      "stamina": 0,
+      "psyche": 1,
+      "focus": 1
+    },
+    "grantedFeatures": [
+      {
+        "name": "Psionic Intuition",
+        "description": "Once per scene, ask the GM one yes/no question about a nearby psychic trace, hidden motive, or impossible phenomenon."
+      },
+      {
+        "name": "Void Resistance",
+        "description": "Gain +1 defense against psyche-based attacks and environmental effects tied to vacuum, deep space, or psychic dread."
+      },
+      {
+        "name": "Psychic Overchannel",
+        "description": "Before rolling a Psyche or Focus skill, take 1 Psyche Damage to increase the skill die one step for that roll."
+      }
+    ]
+  }
+}

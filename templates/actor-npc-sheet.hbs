@@ -1,4 +1,4 @@
-<form class="astrolysis character-sheet" autocomplete="off">
+<form class="astrolysis character-sheet npc-sheet" autocomplete="off">
 
   <aside class="status-rail" aria-label="{{labels.StatusRail}}">
     <div class="rail-scroll">
@@ -15,6 +15,21 @@
       <div class="profile-preview" aria-hidden="true">
         <img src="{{actor.img}}" alt="" />
       </div>
+
+      <section class="rail-card npc-summary-card">
+        <header>
+          <i class="fa-solid fa-id-badge"></i>
+          <h3>{{labels.NPCRole}}</h3>
+        </header>
+        <ul class="defense-list">
+          {{#each npcSummary as |entry|}}
+          <li>
+            <span>{{entry.label}}</span>
+            <strong>{{entry.value}}</strong>
+          </li>
+          {{/each}}
+        </ul>
+      </section>
 
       <section class="rail-card resource-card health-card">
         <header>
@@ -79,30 +94,6 @@
         </div>
       </section>
 
-      <section class="rail-card armor-summary-card {{#if equippedArmor}}armor-equipped{{/if}}">
-        <header>
-          <i class="fa-solid fa-shield"></i>
-          <h3>{{labels.EquippedArmor}}</h3>
-        </header>
-        {{#if equippedArmor}}
-        <div class="armor-summary">
-          <strong>{{equippedArmor.name}}</strong>
-          <dl>
-            <div><dt>{{labels.ArmorDefense}}</dt><dd>+{{equippedArmor.system.defenseBonus}}</dd></div>
-            <div><dt>{{labels.MaxDexBonus}}</dt><dd>{{equippedArmor.system.maxDexBonus}}</dd></div>
-            <div><dt>{{labels.ArmorPenalty}}</dt><dd>{{equippedArmor.system.armorPenalty}}</dd></div>
-            <div><dt>{{labels.Bulk}}</dt><dd>{{equippedArmor.bulk}}</dd></div>
-          </dl>
-        </div>
-        {{else}}
-        <div class="condition-empty">{{labels.NoArmorEquipped}}</div>
-        <button type="button" class="rail-action" data-action="addItem" data-item-type="armor">
-          <i class="fa-solid fa-plus"></i>
-          <span>{{labels.AddArmor}}</span>
-        </button>
-        {{/if}}
-      </section>
-
       <section class="rail-card metric-card">
         <header>
           <i class="fa-solid fa-person-running"></i>
@@ -140,21 +131,29 @@
     </div>
   </aside>
 
-  <header class="identity-bar">
+  <header class="identity-bar npc-identity-bar">
     <div class="identity-main">
-      <label class="sr-only" for="{{actor.id}}-name">{{labels.CharacterName}}</label>
-      <input id="{{actor.id}}-name" type="text" class="character-name" name="name" value="{{actor.name}}" placeholder="{{labels.CharacterName}}" />
+      <label class="sr-only" for="{{actor.id}}-name">{{labels.NPCName}}</label>
+      <input id="{{actor.id}}-name" type="text" class="character-name" name="name" value="{{actor.name}}" placeholder="{{labels.NPCName}}" />
+    </div>
+    <div class="npc-inline-field role-control">
+      <label for="{{actor.id}}-role">{{labels.NPCRole}}</label>
+      <input id="{{actor.id}}-role" type="text" name="system.role" value="{{system.role}}" />
     </div>
     <div class="level-control">
-      <label for="{{actor.id}}-level">{{labels.LevelAbbr}}</label>
+      <label for="{{actor.id}}-level">{{labels.Level}}</label>
       <input id="{{actor.id}}-level" type="number" name="system.level" value="{{system.level}}" min="1" />
+    </div>
+    <div class="level-control">
+      <label for="{{actor.id}}-morale">{{labels.Morale}}</label>
+      <input id="{{actor.id}}-morale" type="number" name="system.morale" value="{{system.morale}}" min="0" max="10" />
     </div>
     <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="{{labels.ToggleTheme}}" aria-label="{{labels.ToggleTheme}}">
       {{#if (eq theme "dark")}}<i class="fa-solid fa-sun"></i>{{else}}<i class="fa-solid fa-moon"></i>{{/if}}
     </button>
   </header>
 
-  <nav class="sheet-tabs" role="tablist" aria-label="{{labels.CharacterName}}">
+  <nav class="sheet-tabs" role="tablist" aria-label="{{labels.NPCName}}">
     {{#each tabs as |tab|}}
     <button type="button"
             class="sheet-tab {{#if tab.active}}active{{/if}}"
@@ -179,7 +178,7 @@
         </header>
         <div class="base-grid">
           {{#each baseEntries as |base|}}
-          <article class="base-card{{#if base.substats.length}} has-substats{{/if}}">
+          <article class="base-card">
             <label for="{{../actor.id}}-base-{{base.key}}">{{base.label}}</label>
             <input id="{{../actor.id}}-base-{{base.key}}" type="number" name="system.bases.{{base.key}}" value="{{base.value}}" min="0" />
             {{#with base.lastRoll as |lr|}}
@@ -188,63 +187,10 @@
               <strong>{{lr.total}}</strong>
             </div>
             {{/with}}
-            <label class="die-row" for="{{../actor.id}}-base-{{base.key}}-die" data-tooltip="{{@root.labels.SelectDieSize}}">
-              <span class="die-label">{{@root.labels.DieSize}}</span>
-              <select id="{{../actor.id}}-base-{{base.key}}-die"
-                      name="flags.astrolysis.baseDieSizes.{{base.key}}"
-                      data-dtype="Number"
-                      class="die-selector">
-                {{#each base.dieOptions as |opt|}}
-                <option value="{{opt.size}}" {{#if opt.selected}}selected{{/if}}>d{{opt.size}}</option>
-                {{/each}}
-              </select>
-            </label>
             <button type="button" data-action="rollBase" data-base="{{base.key}}">
               <i class="fa-solid fa-dice-d20"></i>
-              <span>{{@root.labels.Roll}} {{base.value}}d{{base.dieSize}}</span>
+              <span>{{@root.labels.Roll}}</span>
             </button>
-
-            {{#if base.substats.length}}
-            <section class="substats">
-              <header class="substats-header">{{@root.labels.StaminaSubstats}}</header>
-              {{#each base.substats as |sub|}}
-              <article class="substat-card">
-                <label for="{{@root.actor.id}}-substat-{{sub.key}}">{{sub.label}}</label>
-                <div class="substat-row">
-                  <input id="{{@root.actor.id}}-substat-{{sub.key}}"
-                         type="number"
-                         name="system.staminaSubstats.{{sub.key}}"
-                         value="{{sub.modifier}}"
-                         step="1"
-                         data-tooltip="{{@root.labels.SubstatModifierTooltip}}" />
-                  <span class="substat-arrow">&rarr;</span>
-                  <span class="substat-dice" data-tooltip="{{@root.labels.SubstatDiceTooltip}}">{{sub.diceCount}}</span>
-                </div>
-                {{#with sub.lastRoll as |lr|}}
-                <div class="last-roll {{#if lr.degree}}degree-{{lr.degree}}{{/if}}">
-                  <span>{{@root.labels.LastRoll}}</span>
-                  <strong>{{lr.total}}</strong>
-                </div>
-                {{/with}}
-                <label class="die-row" for="{{@root.actor.id}}-substat-{{sub.key}}-die" data-tooltip="{{@root.labels.SelectDieSize}}">
-                  <span class="die-label">{{@root.labels.DieSize}}</span>
-                  <select id="{{@root.actor.id}}-substat-{{sub.key}}-die"
-                          name="flags.astrolysis.baseDieSizes.{{sub.key}}"
-                          data-dtype="Number"
-                          class="die-selector">
-                    {{#each sub.dieOptions as |opt|}}
-                    <option value="{{opt.size}}" {{#if opt.selected}}selected{{/if}}>d{{opt.size}}</option>
-                    {{/each}}
-                  </select>
-                </label>
-                <button type="button" data-action="rollBase" data-base="{{sub.key}}">
-                  <i class="fa-solid fa-dice-d20"></i>
-                  <span>{{@root.labels.Roll}} {{sub.diceCount}}d{{sub.dieSize}}</span>
-                </button>
-              </article>
-              {{/each}}
-            </section>
-            {{/if}}
           </article>
           {{/each}}
         </div>
@@ -254,10 +200,10 @@
       {{#if (eq activeTab "skills")}}
       <section class="sheet-panel skills-panel" role="tabpanel">
         <header class="panel-heading">
-          <h2>{{labels.Skills}}</h2>
+          <h2>{{labels.NPCActions}}</h2>
           <button type="button" data-action="addItem" data-item-type="skill">
             <i class="fa-solid fa-plus"></i>
-            <span>{{labels.AddSkill}}</span>
+            <span>{{labels.AddAction}}</span>
           </button>
         </header>
         <ul class="console-list">
@@ -278,7 +224,7 @@
             </div>
           </li>
           {{else}}
-          <li class="empty-row">{{@root.labels.EmptySkills}}</li>
+          <li class="empty-row">{{@root.labels.EmptyActions}}</li>
           {{/each}}
         </ul>
       </section>
@@ -293,27 +239,6 @@
             <span>{{labels.AddWeapon}}</span>
           </button>
         </header>
-        <div class="bulk-meter {{bulk.state}}">
-          <div>
-            <strong>{{labels.TotalBulk}}</strong>
-            <span>{{bulk.label}}</span>
-          </div>
-          <meter min="0" max="{{bulk.max}}" value="{{bulk.total}}"></meter>
-        </div>
-        {{#if bulk.sources.length}}
-        <div class="bulk-sources">
-          <span class="feature-title">{{labels.BulkSources}}</span>
-          <ul>
-            {{#each bulk.sources as |source|}}
-            <li>
-              <span>{{source.name}}</span>
-              <small>{{source.typeLabel}}</small>
-              <strong>{{source.totalBulk}}</strong>
-            </li>
-            {{/each}}
-          </ul>
-        </div>
-        {{/if}}
         <ul class="console-list">
           {{#each weapons as |w|}}
           <li class="console-row">
@@ -323,7 +248,6 @@
                 <span>{{w.baseLabel}}</span>
                 <span>{{w.trainingLabel}} d{{w.dieSize}}</span>
                 <span>{{@root.labels.Bulk}} {{w.bulk}}</span>
-                {{#if w.system.damageBonus}}<span>+{{w.system.damageBonus}} {{@root.labels.Damage}}</span>{{/if}}
               </span>
             </div>
             <div class="row-actions">
@@ -343,16 +267,10 @@
       <section class="sheet-panel inventory-panel" role="tabpanel">
         <header class="panel-heading">
           <h2>{{labels.Inventory}}</h2>
-          <div class="button-cluster">
-            <button type="button" data-action="addItem" data-item-type="inventory">
-              <i class="fa-solid fa-plus"></i>
-              <span>{{labels.AddInventory}}</span>
-            </button>
-            <button type="button" data-action="addItem" data-item-type="armor">
-              <i class="fa-solid fa-shield"></i>
-              <span>{{labels.AddArmor}}</span>
-            </button>
-          </div>
+          <button type="button" data-action="addItem" data-item-type="inventory">
+            <i class="fa-solid fa-plus"></i>
+            <span>{{labels.AddInventory}}</span>
+          </button>
         </header>
         <div class="bulk-meter {{bulk.state}}">
           <div>
@@ -361,20 +279,6 @@
           </div>
           <meter min="0" max="{{bulk.max}}" value="{{bulk.total}}"></meter>
         </div>
-        {{#if bulk.sources.length}}
-        <div class="bulk-sources">
-          <span class="feature-title">{{labels.BulkSources}}</span>
-          <ul>
-            {{#each bulk.sources as |source|}}
-            <li>
-              <span>{{source.name}}</span>
-              <small>{{source.typeLabel}}</small>
-              <strong>{{source.totalBulk}}</strong>
-            </li>
-            {{/each}}
-          </ul>
-        </div>
-        {{/if}}
         <ul class="console-list">
           {{#each inventory as |i|}}
           <li class="console-row">
@@ -383,48 +287,15 @@
               <span class="row-meta">
                 <span>x{{i.system.quantity}}</span>
                 <span>{{@root.labels.Bulk}} {{i.bulk}} / {{i.totalBulk}}</span>
-                <span>{{#if i.system.equipped}}{{@root.labels.Equipped}}{{else}}{{@root.labels.Unequipped}}{{/if}}</span>
               </span>
             </div>
             <div class="row-actions">
-              <button type="button" class="icon-button" data-action="toggleEquip" data-item-id="{{i.id}}" data-tooltip="{{@root.labels.ToggleEquipped}}" aria-label="{{@root.labels.ToggleEquipped}}">
-                {{#if i.system.equipped}}<i class="fa-solid fa-square-check"></i>{{else}}<i class="fa-regular fa-square"></i>{{/if}}
-              </button>
               <button type="button" class="icon-button" data-action="editItem" data-item-id="{{i.id}}" data-tooltip="{{@root.labels.Edit}}" aria-label="{{@root.labels.Edit}}"><i class="fa-solid fa-pen"></i></button>
               <button type="button" class="icon-button danger" data-action="deleteItem" data-item-id="{{i.id}}" data-tooltip="{{@root.labels.Delete}}" aria-label="{{@root.labels.Delete}}"><i class="fa-solid fa-trash"></i></button>
             </div>
           </li>
           {{else}}
           <li class="empty-row">{{@root.labels.EmptyInventory}}</li>
-          {{/each}}
-        </ul>
-
-        <header class="subpanel-heading">
-          <h3>{{labels.Armor}}</h3>
-        </header>
-        <ul class="console-list">
-          {{#each armors as |armor|}}
-          <li class="console-row">
-            <div class="row-main">
-              <strong>{{armor.name}}</strong>
-              <span class="row-meta">
-                <span>{{@root.labels.ArmorDefense}} +{{armor.system.defenseBonus}}</span>
-                <span>{{@root.labels.MaxDexBonus}} {{armor.system.maxDexBonus}}</span>
-                <span>{{@root.labels.ArmorPenalty}} {{armor.system.armorPenalty}}</span>
-                <span>{{@root.labels.Bulk}} {{armor.bulk}}</span>
-                <span>{{#if armor.system.equipped}}{{@root.labels.Equipped}}{{else}}{{@root.labels.Unequipped}}{{/if}}</span>
-              </span>
-            </div>
-            <div class="row-actions">
-              <button type="button" class="icon-button" data-action="toggleArmorEquip" data-item-id="{{armor.id}}" data-tooltip="{{@root.labels.ToggleEquipped}}" aria-label="{{@root.labels.ToggleEquipped}}">
-                {{#if armor.system.equipped}}<i class="fa-solid fa-shield-halved"></i>{{else}}<i class="fa-solid fa-shield"></i>{{/if}}
-              </button>
-              <button type="button" class="icon-button" data-action="editItem" data-item-id="{{armor.id}}" data-tooltip="{{@root.labels.Edit}}" aria-label="{{@root.labels.Edit}}"><i class="fa-solid fa-pen"></i></button>
-              <button type="button" class="icon-button danger" data-action="deleteItem" data-item-id="{{armor.id}}" data-tooltip="{{@root.labels.Delete}}" aria-label="{{@root.labels.Delete}}"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </li>
-          {{else}}
-          <li class="empty-row">{{@root.labels.EmptyArmor}}</li>
           {{/each}}
         </ul>
       </section>
@@ -488,10 +359,19 @@
       </section>
       {{/if}}
 
+      {{#if (eq activeTab "tactics")}}
+      <section class="sheet-panel biography-panel npc-tactics-panel" role="tabpanel">
+        <header class="panel-heading">
+          <h2>{{labels.Tactics}}</h2>
+        </header>
+        <textarea name="system.tactics">{{system.tactics}}</textarea>
+      </section>
+      {{/if}}
+
       {{#if (eq activeTab "biography")}}
       <section class="sheet-panel biography-panel" role="tabpanel">
         <header class="panel-heading">
-          <h2>{{labels.Biography}}</h2>
+          <h2>{{labels.Notes}}</h2>
         </header>
         <textarea name="system.biography" placeholder="{{labels.BiographyPlaceholder}}">{{system.biography}}</textarea>
       </section>

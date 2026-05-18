@@ -1,560 +1,1727 @@
 /* ============================================================
-   Astrolysis — BRUTALIST sheet styling
-   Themes applied via [data-theme="dark"|"light"] on the window root.
-   Default = dark.
+   Astrolysis - Dark Holo sheet system
    ============================================================ */
 
-/* ----- DARK (default) ----- */
 .astrolysis,
 .astrolysis[data-theme="dark"] {
-  --astro-paper:     #14171f;
-  --astro-paper-2:   #1c2030;
-  --astro-paper-3:   #0f1219;
-  --astro-ink:       #ece8df;
-  --astro-ink-soft:  #bfbfbf;
-  --astro-muted:     #8a93a8;
-  --astro-edge:      #ece8df;
-  --astro-acid:      #d6ff2e;
-  --astro-blood:     #ff3b3b;
-  --astro-good:      #6fdf9a;
-  --astro-shadow-c:  #000;
+  --astro-bg: #05070a;
+  --astro-surface: #0b1118;
+  --astro-surface-2: #101a24;
+  --astro-surface-3: #142231;
+  --astro-field: #071018;
+  --astro-text: #eef8ff;
+  --astro-text-soft: #b7c7d4;
+  --astro-muted: #738797;
+  --astro-line: rgba(77, 232, 255, 0.48);
+  --astro-line-strong: #4de8ff;
+  --astro-accent: #d6ff2e;
+  --astro-warn: #ffcf5a;
+  --astro-danger: #ff4b5c;
+  --astro-good: #55f0a3;
+  --astro-shadow: rgba(0, 0, 0, 0.55);
+  --astro-grid: rgba(77, 232, 255, 0.08);
 }
 
-/* ----- LIGHT ----- */
 .astrolysis[data-theme="light"] {
-  --astro-paper:     #ece8df;
-  --astro-paper-2:   #ddd8cb;
-  --astro-paper-3:   #f5f2eb;
-  --astro-ink:       #0a0a0a;
-  --astro-ink-soft:  #3a3a3a;
-  --astro-muted:     #6a6a6a;
-  --astro-edge:      #0a0a0a;
-  --astro-acid:      #d6ff2e;
-  --astro-blood:     #ff3b3b;
-  --astro-good:      #2a8f4f;
-  --astro-shadow-c:  #0a0a0a;
+  --astro-bg: #eef4f7;
+  --astro-surface: #f8fbfc;
+  --astro-surface-2: #e4edf2;
+  --astro-surface-3: #d5e4eb;
+  --astro-field: #ffffff;
+  --astro-text: #101820;
+  --astro-text-soft: #344855;
+  --astro-muted: #627785;
+  --astro-line: rgba(0, 106, 128, 0.38);
+  --astro-line-strong: #006a80;
+  --astro-accent: #6c8f00;
+  --astro-warn: #9a6500;
+  --astro-danger: #b51d33;
+  --astro-good: #127c50;
+  --astro-shadow: rgba(16, 24, 32, 0.18);
+  --astro-grid: rgba(0, 106, 128, 0.08);
 }
 
 .astrolysis {
-  --astro-border:     2px solid var(--astro-edge);
-  --astro-border-fat: 3px solid var(--astro-edge);
-  --astro-shadow:     4px 4px 0 var(--astro-shadow-c);
-  --astro-shadow-sm:  2px 2px 0 var(--astro-shadow-c);
-  --astro-mono:       "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+  --astro-font: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --astro-mono: "JetBrains Mono", "Fira Code", Consolas, "Courier New", monospace;
+  --astro-border: 1px solid var(--astro-line);
+  --astro-border-strong: 1px solid var(--astro-line-strong);
+  --astro-radius: 6px;
+  --rail-width: 15rem;
+  --identity-height: 4.2rem;
+  --tabs-height: 3.1rem;
 }
 
-/* ============================================================
-   Window frame  (selector NO LONGER requires .application — was
-   the cause of the unstyled top bar in dark mode)
-   ============================================================ */
+.astrolysis.sheet {
+  container-type: inline-size;
+}
+
 .astrolysis .window-content {
   padding: 0;
-  background: var(--astro-paper);
-  color: var(--astro-ink);
-  font-family: var(--astro-mono);
+  color: var(--astro-text);
+  font-family: var(--astro-font);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background:
+    linear-gradient(var(--astro-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--astro-grid) 1px, transparent 1px),
+    var(--astro-bg);
+  background-size: 24px 24px, 24px 24px, auto;
 }
 
 .astrolysis .window-header {
-  background: var(--astro-paper-3);
-  color: var(--astro-ink);
-  border-bottom: var(--astro-border-fat);
+  background: var(--astro-surface);
+  color: var(--astro-text);
+  border-bottom: var(--astro-border-strong);
+  box-shadow: 0 8px 24px var(--astro-shadow);
 }
-.astrolysis .window-header .window-title {
-  font-family: var(--astro-mono);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 700;
-  color: var(--astro-ink);
-}
+
+.astrolysis .window-header .window-title,
 .astrolysis .window-header .header-control {
-  color: var(--astro-ink);
+  color: var(--astro-text);
+  font-family: var(--astro-mono);
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
-.astrolysis.sheet form {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
+.astrolysis .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   padding: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--astro-edge) var(--astro-paper);
-}
-.astrolysis.sheet form::-webkit-scrollbar { width: 12px; }
-.astrolysis.sheet form::-webkit-scrollbar-track {
-  background: var(--astro-paper);
-  border-left: var(--astro-border);
-}
-.astrolysis.sheet form::-webkit-scrollbar-thumb {
-  background: var(--astro-edge);
-  border: 2px solid var(--astro-paper);
-}
-
-/* ============================================================
-   Header (sticky)
-   ============================================================ */
-.astrolysis .sheet-header {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
-  background: var(--astro-paper);
-  border-bottom: var(--astro-border-fat);
-  align-items: flex-start;
-}
-
-/* Profile image + hover overlay */
-.astrolysis .profile-wrapper {
-  position: relative;
-  flex: 0 0 auto;
-  width: 68px;
-  height: 68px;
-  border: var(--astro-border);
-  box-shadow: var(--astro-shadow-sm);
-  cursor: pointer;
+  margin: -1px;
   overflow: hidden;
-  background: var(--astro-paper-3);
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
+
+.astrolysis form {
+  color: var(--astro-text);
+  font-family: var(--astro-font);
+}
+
+.astrolysis form input[type="text"],
+.astrolysis form input[type="number"],
+.astrolysis form select,
+.astrolysis form textarea {
+  min-width: 0;
+  background: var(--astro-field);
+  color: var(--astro-text);
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  padding: 0.4rem 0.55rem;
+  font-family: var(--astro-mono);
+  font-size: 0.86rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.astrolysis form textarea {
+  line-height: 1.45;
+}
+
+.astrolysis form input:focus,
+.astrolysis form select:focus,
+.astrolysis form textarea:focus {
+  outline: 2px solid var(--astro-accent);
+  outline-offset: 1px;
+  border-color: var(--astro-accent);
+}
+
+.astrolysis form input[disabled] {
+  opacity: 0.72;
+  background: var(--astro-surface-2);
+}
+
+.astrolysis form input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--astro-accent);
+}
+
+.astrolysis form button {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: linear-gradient(180deg, var(--astro-surface-3), var(--astro-surface-2));
+  color: var(--astro-text);
+  padding: 0.42rem 0.72rem;
+  font-family: var(--astro-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 16px var(--astro-shadow);
+  transition: border-color 0.12s ease, color 0.12s ease, transform 0.12s ease, background 0.12s ease;
+}
+
+.astrolysis form button:hover {
+  color: var(--astro-accent);
+  border-color: var(--astro-accent);
+  transform: translateY(-1px);
+}
+
+.astrolysis form button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 8px var(--astro-shadow);
+}
+
+.astrolysis form button i {
+  flex: 0 0 auto;
+}
+
+.astrolysis .profile-wrapper.image-control {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: var(--astro-border-strong);
+  border-radius: var(--astro-radius);
+  overflow: hidden;
+  background: var(--astro-field);
+  box-shadow: 0 0 0 1px rgba(214, 255, 46, 0.18), 0 14px 26px var(--astro-shadow);
+}
+
+.astrolysis .profile-wrapper.image-control:hover {
+  border-color: var(--astro-accent);
+}
+
 .astrolysis .profile-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
+
 .astrolysis .profile-overlay {
   position: absolute;
   inset: 0;
-  background: var(--astro-edge);
-  color: var(--astro-paper);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.15rem;
+  gap: 0.25rem;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
   opacity: 0;
-  transition: opacity 0.12s ease;
   pointer-events: none;
-}
-.astrolysis .profile-wrapper:hover .profile-overlay { opacity: 1; }
-.astrolysis .profile-overlay .upload-icon { font-size: 1.4rem; line-height: 1; }
-.astrolysis .profile-overlay .upload-label {
-  font-size: 0.6rem;
-  letter-spacing: 2px;
   text-transform: uppercase;
-  font-weight: 700;
+  transition: opacity 0.14s ease;
 }
 
-/* Header fields */
-.astrolysis .header-fields {
-  flex: 1;
+.astrolysis .profile-wrapper:hover .profile-overlay {
+  opacity: 1;
+}
+
+/* ============================================================
+   Character sheet
+   ============================================================ */
+
+.astrolysis.sheet form.character-sheet {
+  display: grid;
+  flex: 1 1 auto;
+  grid:
+    "rail identity" var(--identity-height)
+    "rail tabs" var(--tabs-height)
+    "rail body" minmax(0, 1fr) / var(--rail-width) minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.astrolysis .status-rail {
+  grid-area: rail;
+  position: relative;
+  z-index: 4;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  border-right: var(--astro-border-strong);
+  background:
+    linear-gradient(180deg, rgba(77, 232, 255, 0.12), transparent 28rem),
+    var(--astro-surface);
+}
+
+.astrolysis .rail-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.8rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--astro-line-strong) transparent;
+}
+
+.astrolysis .rail-scroll::-webkit-scrollbar,
+.astrolysis .console-scroll::-webkit-scrollbar,
+.astrolysis.sheet.item form::-webkit-scrollbar {
+  width: 9px;
+}
+
+.astrolysis .rail-scroll::-webkit-scrollbar-thumb,
+.astrolysis .console-scroll::-webkit-scrollbar-thumb,
+.astrolysis.sheet.item form::-webkit-scrollbar-thumb {
+  background: var(--astro-line-strong);
+  border-radius: 999px;
+}
+
+.astrolysis .portrait-panel {
+  position: relative;
+  margin: 0 0 0.75rem;
+}
+
+.astrolysis .portrait-panel .profile-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.astrolysis .profile-preview {
+  position: absolute;
+  top: 0.8rem;
+  left: calc(100% + 0.8rem);
+  z-index: 30;
+  width: min(28rem, 55vw);
+  max-height: calc(100vh - 8rem);
+  padding: 0.55rem;
+  border: var(--astro-border-strong);
+  border-radius: var(--astro-radius);
+  background: rgba(5, 7, 10, 0.96);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.78), 0 0 0 1px rgba(214, 255, 46, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-0.3rem) scale(0.98);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.astrolysis .profile-preview img {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 9.5rem);
+  object-fit: contain;
+  border-radius: 4px;
+  background: var(--astro-field);
+}
+
+.astrolysis .status-rail:has(.portrait-panel:hover) .profile-preview,
+.astrolysis .status-rail:has(.profile-preview:hover) .profile-preview {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.astrolysis .rail-card {
+  position: relative;
+  margin-bottom: 0.62rem;
+  padding: 0.62rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: rgba(16, 26, 36, 0.78);
+  box-shadow: inset 0 0 18px rgba(77, 232, 255, 0.05), 0 10px 22px var(--astro-shadow);
+}
+
+.astrolysis .rail-card::before,
+.astrolysis .sheet-panel::before,
+.astrolysis .console-row::before,
+.astrolysis .item-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--astro-line-strong), transparent 34%);
+  height: 1px;
+  opacity: 0.75;
+}
+
+.astrolysis .rail-card header,
+.astrolysis .panel-heading,
+.astrolysis .item-identity {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
+}
+
+.astrolysis .rail-card header {
+  margin-bottom: 0.45rem;
+  color: var(--astro-line-strong);
+}
+
+.astrolysis .rail-card h3,
+.astrolysis .panel-heading h2 {
+  margin: 0;
+  font-family: var(--astro-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.astrolysis .resource-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.astrolysis .resource-pair input {
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.astrolysis .resource-sep {
+  color: var(--astro-muted);
+  font-family: var(--astro-mono);
+  font-weight: 900;
+}
+
+.astrolysis .condition-card header,
+.astrolysis .condition-active header {
+  color: var(--astro-danger);
+}
+
+.astrolysis .condition-active {
+  border-color: rgba(255, 75, 92, 0.58);
+}
+
+.astrolysis .condition-empty {
+  display: block;
+  padding: 0.52rem 0.55rem;
+  border: 1px dashed rgba(77, 232, 255, 0.26);
+  border-radius: 4px;
+  color: var(--astro-muted);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.astrolysis .condition-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.astrolysis .condition-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  gap: 0.28rem;
+  padding: 0.25rem 0.34rem;
+  border: 1px solid rgba(77, 232, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(7, 16, 24, 0.8);
+  color: var(--astro-text-soft);
+  font-size: 0.72rem;
+}
+
+.astrolysis .condition-chip.automatic {
+  border-color: rgba(255, 75, 92, 0.58);
+  color: var(--astro-danger);
+}
+
+.astrolysis .condition-chip > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.astrolysis .condition-chip button {
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.astrolysis .condition-picker {
+  position: relative;
+  margin-top: 0.45rem;
+}
+
+.astrolysis .condition-picker summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.45rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: var(--astro-field);
+  color: var(--astro-text);
+  cursor: pointer;
+  font-family: var(--astro-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.astrolysis .condition-picker summary::marker {
+  content: "";
+}
+
+.astrolysis .condition-menu {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  display: grid;
+  gap: 0.28rem;
+  max-height: 14rem;
+  overflow-y: auto;
+  padding: 0.45rem;
+  border: var(--astro-border-strong);
+  border-radius: var(--astro-radius);
+  background: rgba(5, 7, 10, 0.98);
+  box-shadow: 0 18px 32px var(--astro-shadow);
+}
+
+.astrolysis .condition-menu button {
+  justify-content: flex-start;
+  min-height: 1.85rem;
+  padding: 0.28rem 0.45rem;
+}
+
+.astrolysis .condition-menu button[disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.astrolysis .condition-token {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 75, 92, 0.58);
+  border-radius: 4px;
+  background: rgba(255, 75, 92, 0.1);
+}
+
+.astrolysis .condition-token > i {
+  color: var(--astro-danger);
+}
+
+.astrolysis .condition-token div {
   min-width: 0;
 }
-.astrolysis .name-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: stretch;
+
+.astrolysis .condition-token strong,
+.astrolysis .condition-token span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* --- NAMEPLATE: dark panel + cream text in dark mode, inverted in light --- */
-.astrolysis .header-fields input[name="name"] {
-  flex: 1;
+.astrolysis .condition-token strong {
+  color: var(--astro-text);
   font-family: var(--astro-mono);
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 0.82rem;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--astro-ink);
-  background: var(--astro-paper-3);
+}
+
+.astrolysis .condition-token span {
+  color: var(--astro-muted);
+  font-size: 0.73rem;
+}
+
+.astrolysis .condition-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2rem 2rem auto;
+  gap: 0.35rem;
+  align-items: center;
+  margin-top: 0.45rem;
+}
+
+.astrolysis .condition-controls button {
+  min-height: 2rem;
+  padding: 0.25rem 0.4rem;
+}
+
+.astrolysis .condition-controls > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--astro-muted);
+  font-size: 0.72rem;
+}
+
+.astrolysis .condition-controls .text-button {
+  padding-inline: 0.55rem;
+}
+
+.astrolysis .armor-summary {
+  display: grid;
+  gap: 0.48rem;
+}
+
+.astrolysis .armor-summary > strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--astro-text);
+  font-family: var(--astro-mono);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.astrolysis .armor-summary dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.32rem;
+  margin: 0;
+}
+
+.astrolysis .armor-summary div {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+  padding: 0.35rem;
+  border: 1px solid rgba(77, 232, 255, 0.22);
+  border-radius: 4px;
+  background: var(--astro-field);
+}
+
+.astrolysis .armor-summary dt,
+.astrolysis .armor-summary dd {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.astrolysis .armor-summary dt {
+  color: var(--astro-muted);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+}
+
+.astrolysis .armor-summary dd {
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+  font-weight: 900;
+}
+
+.astrolysis .metric-card output {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.24rem;
+  min-height: 2.45rem;
   border: var(--astro-border);
-  padding: 0.25rem 0.55rem;
-  box-shadow: var(--astro-shadow-sm);
-  transition: background 0.1s ease, color 0.1s ease;
+  border-radius: var(--astro-radius);
+  background: var(--astro-field);
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+  font-size: 2rem;
+  font-weight: 900;
 }
-.astrolysis .header-fields input[name="name"]:hover {
-  border-color: var(--astro-acid);
+
+.astrolysis .metric-card output span {
+  color: var(--astro-muted);
+  font-size: 0.75rem;
 }
-.astrolysis .header-fields input[name="name"]:focus {
-  outline: none;
-  background: var(--astro-acid);
-  color: #0a0a0a;
+
+.astrolysis .rail-action {
+  width: 100%;
+}
+
+.astrolysis .defense-list {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.astrolysis .defense-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.34rem 0.45rem;
+  border: 1px solid rgba(77, 232, 255, 0.26);
+  border-radius: 4px;
+  background: var(--astro-field);
+}
+
+.astrolysis .defense-list span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--astro-text-soft);
+  font-size: 0.76rem;
+}
+
+.astrolysis .defense-list strong {
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+  font-size: 1rem;
+}
+
+.astrolysis .identity-bar {
+  grid-area: identity;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.65rem 0.8rem;
+  border-bottom: var(--astro-border);
+  background: rgba(11, 17, 24, 0.92);
+}
+
+.astrolysis .identity-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.astrolysis .character-name {
+  width: 100%;
+  height: 2.6rem;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+
+.astrolysis .level-control {
+  display: grid;
+  gap: 0.16rem;
+  width: 3.6rem;
+  flex: 0 0 auto;
+}
+
+.astrolysis .level-control label,
+.astrolysis .form-grid label,
+.astrolysis .notes-label,
+.astrolysis .eyebrow {
+  color: var(--astro-muted);
+  font-family: var(--astro-mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.astrolysis .level-control input {
+  text-align: center;
 }
 
 .astrolysis .theme-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
   flex: 0 0 auto;
-  width: 2.4rem;
-  font-size: 1.1rem;
-  padding: 0.25rem 0.4rem;
-  letter-spacing: 0;
+  padding: 0;
 }
 
-.astrolysis .header-row {
+.astrolysis .sheet-tabs {
+  grid-area: tabs;
   display: flex;
-  gap: 0.75rem;
   align-items: center;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.45rem 0.75rem;
+  border-bottom: var(--astro-border-strong);
+  background: rgba(8, 14, 20, 0.96);
+  overflow-x: auto;
+  overflow-y: hidden;
 }
-.astrolysis .header-row .movement-label {
-  margin-left: auto;
-  background: var(--astro-edge);
-  color: var(--astro-paper);
-  padding: 0.2rem 0.5rem;
+
+.astrolysis .sheet-tab {
+  height: 2.15rem;
+  flex: 0 0 auto;
+  padding: 0.35rem 0.62rem;
+  white-space: nowrap;
+}
+
+.astrolysis .sheet-tab.active {
+  color: var(--astro-bg);
+  border-color: var(--astro-accent);
+  background: linear-gradient(180deg, var(--astro-accent), #95d313);
+}
+
+.astrolysis .console-body {
+  grid-area: body;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.astrolysis .console-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.85rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--astro-line-strong) transparent;
+}
+
+.astrolysis .sheet-panel,
+.astrolysis .item-body {
+  position: relative;
+  min-width: 0;
   border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: rgba(11, 17, 24, 0.84);
+  box-shadow: 0 16px 34px var(--astro-shadow);
 }
-.astrolysis .header-row .movement-label strong { color: var(--astro-acid); }
-.astrolysis .header-row input[type="number"] { width: 3rem; }
 
-.astrolysis .resource {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
+.astrolysis .sheet-panel {
+  padding: 0.85rem;
 }
-.astrolysis .resource label {
-  min-width: 5rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-weight: 700;
-}
-.astrolysis .resource input[type="number"] {
-  width: 3.5rem;
-  text-align: center;
-  font-weight: 700;
-}
-.astrolysis .resource .sep { font-weight: 700; padding: 0 0.1rem; }
-.astrolysis .resource.health label { background: var(--astro-edge); color: var(--astro-paper); padding: 0.15rem 0.4rem; }
-.astrolysis .resource.madness label { background: var(--astro-blood); color: var(--astro-paper); padding: 0.15rem 0.4rem; }
 
-/* ============================================================
-   Sections + headings
-   ============================================================ */
-.astrolysis form > section {
-  padding: 1rem;
+.astrolysis .panel-heading {
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.65rem;
   border-bottom: var(--astro-border);
 }
-.astrolysis form > section:last-of-type { border-bottom: none; }
 
-.astrolysis h2 {
-  font-family: var(--astro-mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--astro-paper);
-  background: var(--astro-edge);
-  margin: 0 0 0.75rem 0;
-  padding: 0.3rem 0.5rem;
-  font-weight: 700;
-  display: inline-block;
+.astrolysis .panel-heading h2 {
+  color: var(--astro-line-strong);
 }
 
-/* ============================================================
-   Bases grid
-   ============================================================ */
+.astrolysis .panel-heading button {
+  flex: 0 0 auto;
+}
+
+.astrolysis .button-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.astrolysis .subpanel-heading {
+  margin: 0.9rem 0 0.55rem;
+  padding-top: 0.7rem;
+  border-top: var(--astro-border);
+}
+
+.astrolysis .subpanel-heading h3 {
+  margin: 0;
+  color: var(--astro-line-strong);
+  font-family: var(--astro-mono);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.astrolysis .bulk-meter {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
+  padding: 0.62rem 0.72rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: var(--astro-field);
+}
+
+.astrolysis .bulk-meter > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.astrolysis .bulk-meter strong,
+.astrolysis .bulk-meter span {
+  font-family: var(--astro-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.astrolysis .bulk-meter strong {
+  color: var(--astro-text-soft);
+}
+
+.astrolysis .bulk-meter span {
+  color: var(--astro-accent);
+  font-weight: 900;
+}
+
+.astrolysis .bulk-meter meter {
+  width: 100%;
+  height: 0.8rem;
+}
+
+.astrolysis .bulk-meter.near {
+  border-color: var(--astro-warn);
+}
+
+.astrolysis .bulk-meter.near span {
+  color: var(--astro-warn);
+}
+
+.astrolysis .bulk-meter.over {
+  border-color: var(--astro-danger);
+}
+
+.astrolysis .bulk-meter.over span {
+  color: var(--astro-danger);
+}
+
 .astrolysis .base-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
+  gap: 0.7rem;
 }
-.astrolysis .base {
-  background: var(--astro-paper-3);
-  border: var(--astro-border);
-  box-shadow: var(--astro-shadow);
-  padding: 0.6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  position: relative;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
-}
-.astrolysis .base:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0 var(--astro-shadow-c);
-}
-.astrolysis .base > label {
-  text-transform: uppercase;
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  font-weight: 700;
-  color: var(--astro-ink);
-  border-bottom: 1px solid var(--astro-edge);
-  padding-bottom: 0.2rem;
-}
-.astrolysis .base > input[type="number"] {
-  font-family: var(--astro-mono);
-  font-size: 2.25rem;
-  font-weight: 700;
-  text-align: center;
-  background: transparent;
-  border: none;
-  color: var(--astro-ink);
-  padding: 0;
-  line-height: 1;
-}
-.astrolysis .base > input[type="number"]:focus {
-  outline: none;
-  color: var(--astro-blood);
-}
-.astrolysis .base button { width: 100%; margin-top: auto; }
 
-/* Last roll badge */
+.astrolysis .base-card {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.7rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: linear-gradient(180deg, rgba(20, 34, 49, 0.88), rgba(7, 16, 24, 0.92));
+}
+
+.astrolysis .base-card label {
+  color: var(--astro-text-soft);
+  font-family: var(--astro-mono);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.astrolysis .base-card input[type="number"] {
+  width: 100%;
+  border-color: transparent;
+  background: transparent;
+  color: var(--astro-accent);
+  padding: 0;
+  text-align: center;
+  font-size: 2.35rem;
+  line-height: 1;
+  box-shadow: none;
+}
+
+.astrolysis .base-card input[type="number"]:focus {
+  outline-offset: 4px;
+}
+
+.astrolysis .base-card .die-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.4rem;
+  border: var(--astro-border);
+  border-radius: 4px;
+  background: var(--astro-field);
+}
+
+.astrolysis .base-card .die-row .die-label {
+  color: var(--astro-text-soft);
+  font-family: var(--astro-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.astrolysis .base-card .die-selector {
+  width: 100%;
+  min-width: 0;
+  padding: 0.15rem 0.3rem;
+  border: none;
+  background: transparent;
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: right;
+  letter-spacing: 0.05em;
+  box-shadow: none;
+}
+
+.astrolysis .base-card .die-selector:focus {
+  outline: 1px solid var(--astro-accent);
+  outline-offset: 2px;
+}
+
+/* ---- Stamina card with nested sub-stats ----
+   Stamina spans the full row of the base-grid so its sub-stats have room.
+*/
+.astrolysis .base-card.has-substats {
+  grid-column: 1 / -1;
+}
+
+.astrolysis .base-card.has-substats > label,
+.astrolysis .base-card.has-substats > input[type="number"],
+.astrolysis .base-card.has-substats > .last-roll,
+.astrolysis .base-card.has-substats > .die-row,
+.astrolysis .base-card.has-substats > button {
+  grid-column: 1 / -1;
+  justify-self: stretch;
+}
+
+.astrolysis .base-card.has-substats {
+  grid-template-columns: minmax(8rem, 14rem) 1fr;
+  align-items: start;
+  gap: 0.6rem 1rem;
+}
+
+.astrolysis .base-card.has-substats > input[type="number"] {
+  grid-column: 1 / 2;
+}
+
+.astrolysis .base-card.has-substats > .last-roll,
+.astrolysis .base-card.has-substats > .die-row,
+.astrolysis .base-card.has-substats > button {
+  grid-column: 1 / 2;
+}
+
+.astrolysis .substats {
+  grid-column: 2 / -1;
+  grid-row: 1 / 99;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
+  gap: 0.55rem;
+  align-content: start;
+  padding-left: 1rem;
+  border-left: var(--astro-border);
+  min-width: 0;
+}
+
+.astrolysis .substats-header {
+  grid-column: 1 / -1;
+  color: var(--astro-text-soft);
+  font-family: var(--astro-mono);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.astrolysis .substat-card {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.55rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: linear-gradient(180deg, rgba(20, 34, 49, 0.78), rgba(7, 16, 24, 0.85));
+}
+
+.astrolysis .substat-card label {
+  color: var(--astro-text-soft);
+  font-family: var(--astro-mono);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.astrolysis .substat-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.astrolysis .substat-row input[type="number"] {
+  width: 100%;
+  padding: 0.25rem 0.4rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--astro-text);
+}
+
+.astrolysis .substat-arrow {
+  color: var(--astro-muted);
+  font-family: var(--astro-mono);
+  font-weight: 700;
+}
+
+.astrolysis .substat-dice {
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  padding: 0 0.35rem;
+}
+
+/* Substat card has the same die-row/last-roll styles as the parent base-card,
+   inheriting from earlier rules. Override roll button label to be smaller. */
+.astrolysis .substat-card button {
+  padding: 0.32rem 0.55rem;
+  font-size: 0.7rem;
+}
+
 .astrolysis .last-roll {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.4rem;
-  background: var(--astro-edge);
-  color: var(--astro-paper);
-  border: 2px solid var(--astro-edge);
-  padding: 0.2rem 0.4rem;
-  font-size: 0.7rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-.astrolysis .last-roll .lr-label { font-weight: 600; opacity: 0.85; }
-.astrolysis .last-roll .lr-total { font-size: 1rem; font-weight: 700; }
-.astrolysis .last-roll.degree-critical-success { background: var(--astro-acid); color: #0a0a0a; }
-.astrolysis .last-roll.degree-success          { background: var(--astro-good); color: #0a0a0a; }
-.astrolysis .last-roll.degree-minor-failure    { background: var(--astro-paper-2); color: var(--astro-ink); }
-.astrolysis .last-roll.degree-complete-failure { background: var(--astro-blood); color: var(--astro-paper); }
-
-/* ============================================================
-   TABS
-   ============================================================ */
-.astrolysis nav.tabs {
-  display: flex;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  background: var(--astro-paper);
-  border-top: var(--astro-border);
-  border-bottom: var(--astro-border-fat);
-  position: sticky;
-  top: 0;            /* under the sheet-header which has higher z */
-  z-index: 2;
-}
-.astrolysis nav.tabs .tab {
-  flex: 1;
-  background: var(--astro-paper-3);
-  color: var(--astro-ink);
-  border: none;
-  border-right: var(--astro-border);
-  box-shadow: none;
-  padding: 0.65rem 0.5rem;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.3rem 0.42rem;
+  border: var(--astro-border);
+  border-radius: 4px;
+  background: var(--astro-field);
+  color: var(--astro-text-soft);
   font-family: var(--astro-mono);
   font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  cursor: pointer;
-  transition: background 0.1s ease, color 0.1s ease;
-}
-.astrolysis nav.tabs .tab:last-child { border-right: none; }
-.astrolysis nav.tabs .tab:hover {
-  background: var(--astro-acid);
-  color: #0a0a0a;
-}
-.astrolysis nav.tabs .tab.active {
-  background: var(--astro-edge);
-  color: var(--astro-paper);
 }
 
-.astrolysis .tab-content { padding: 1rem; }
-.astrolysis .tab-actions {
-  margin-bottom: 0.75rem;
-  display: flex;
-  justify-content: flex-end;
+.astrolysis .last-roll strong {
+  color: var(--astro-text);
 }
 
-/* ============================================================
-   Item lists
-   ============================================================ */
-.astrolysis .item-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-.astrolysis .item-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.6rem;
-  background: var(--astro-paper-3);
-  border: var(--astro-border);
-  box-shadow: var(--astro-shadow-sm);
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
-}
-.astrolysis .item-list li:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--astro-shadow-c);
-}
-.astrolysis .item-list .item-name {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--astro-ink);
-}
-.astrolysis .item-list .item-sub {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--astro-muted);
-  margin-right: auto;
-}
-.astrolysis .item-list li.empty {
-  justify-content: center;
-  color: var(--astro-muted);
-  font-style: italic;
-  text-transform: none;
-  letter-spacing: 0;
-  border-style: dashed;
+.astrolysis .last-roll.degree-critical-success {
+  border-color: var(--astro-accent);
+  color: var(--astro-accent);
 }
 
-/* Icon buttons (edit/delete/equip) */
-.astrolysis .item-list button.icon {
-  width: 2rem;
-  padding: 0.3rem 0;
-  letter-spacing: 0;
-  font-size: 0.9rem;
-}
-.astrolysis .item-list button.icon.danger:hover {
-  background: var(--astro-blood);
-  color: var(--astro-paper);
+.astrolysis .last-roll.degree-success {
+  border-color: var(--astro-good);
+  color: var(--astro-good);
 }
 
-/* ============================================================
-   Biography / textareas
-   ============================================================ */
-.astrolysis .biography textarea,
-.astrolysis .notes textarea {
-  width: 100%;
-  min-height: 110px;
-  resize: vertical;
-  font-family: var(--astro-mono);
-  font-size: 0.85rem;
+.astrolysis .last-roll.degree-minor-failure {
+  border-color: var(--astro-warn);
+  color: var(--astro-warn);
 }
 
-/* ============================================================
-   Inputs / selects
-   ============================================================ */
-.astrolysis input[type="text"],
-.astrolysis input[type="number"],
-.astrolysis select,
-.astrolysis textarea {
-  background: var(--astro-paper-3);
-  color: var(--astro-ink);
-  border: var(--astro-border);
-  border-radius: 0;
-  padding: 0.35rem 0.5rem;
-  font-family: var(--astro-mono);
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: background 0.08s ease;
-}
-.astrolysis input[type="text"]:focus,
-.astrolysis input[type="number"]:focus,
-.astrolysis select:focus,
-.astrolysis textarea:focus {
-  outline: none;
-  background: var(--astro-acid);
-  color: #0a0a0a;
-}
-.astrolysis input[type="checkbox"] {
-  width: 1.1rem;
-  height: 1.1rem;
-  accent-color: var(--astro-acid);
-}
-.astrolysis input[disabled] {
-  background: var(--astro-paper-2);
-  opacity: 0.7;
+.astrolysis .last-roll.degree-complete-failure {
+  border-color: var(--astro-danger);
+  color: var(--astro-danger);
 }
 
-/* ============================================================
-   Buttons (shared base — but tabs override)
-   ============================================================ */
-.astrolysis button {
-  background: var(--astro-edge);
-  color: var(--astro-paper);
-  border: var(--astro-border);
-  border-radius: 0;
-  padding: 0.4rem 0.8rem;
-  font-family: var(--astro-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: var(--astro-shadow-sm);
-  transition: transform 0.06s ease, box-shadow 0.06s ease, background 0.08s ease, color 0.08s ease;
-}
-.astrolysis button:hover {
-  background: var(--astro-acid);
-  color: #0a0a0a;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--astro-shadow-c);
-}
-.astrolysis button:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0 0 0 var(--astro-shadow-c);
-}
-
-/* ============================================================
-   Item sheet variants
-   ============================================================ */
-.astrolysis.sheet.item .stat-row {
+.astrolysis .console-list {
   display: grid;
-  grid-template-columns: 7rem 1fr;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.astrolysis .console-row,
+.astrolysis .empty-row {
+  position: relative;
+  min-width: 0;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: rgba(16, 26, 36, 0.72);
+}
+
+.astrolysis .console-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.6rem;
+  padding: 0.58rem 0.65rem;
 }
-.astrolysis.sheet.item .stat-row label {
+
+.astrolysis .row-main {
+  display: grid;
+  gap: 0.22rem;
+  min-width: 0;
+}
+
+.astrolysis .row-main strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--astro-text);
+  font-family: var(--astro-mono);
+  font-size: 0.88rem;
+}
+
+.astrolysis .row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  min-width: 0;
+  color: var(--astro-muted);
+  font-size: 0.74rem;
+}
+
+.astrolysis .row-meta span {
+  max-width: 100%;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid rgba(77, 232, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(7, 16, 24, 0.66);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.astrolysis .row-description {
+  max-height: 5.5rem;
+  overflow: auto;
+  color: var(--astro-text-soft);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.astrolysis .row-description p {
+  margin: 0 0 0.35rem;
+}
+
+.astrolysis .archetype-row {
+  align-items: start;
+}
+
+.astrolysis .bulk-sources {
+  display: grid;
+  gap: 0.42rem;
+  margin: 0 0 0.7rem;
+  padding: 0.58rem 0.65rem;
+  border: 1px solid rgba(77, 232, 255, 0.22);
+  border-radius: var(--astro-radius);
+  background: rgba(7, 16, 24, 0.58);
+}
+
+.astrolysis .bulk-sources ul {
+  display: grid;
+  gap: 0.32rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.astrolysis .bulk-sources li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 0;
+  color: var(--astro-text-soft);
+  font-size: 0.76rem;
+}
+
+.astrolysis .bulk-sources li > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.astrolysis .bulk-sources small {
+  color: var(--astro-muted);
+  font-family: var(--astro-mono);
+  font-size: 0.66rem;
   text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  font-weight: 700;
 }
-.astrolysis.sheet.item .notes {
-  margin-top: 0.75rem;
+
+.astrolysis .bulk-sources strong {
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+}
+
+.astrolysis .archetype-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.astrolysis .archetype-slot-card {
+  display: grid;
+  gap: 0.62rem;
+  min-width: 0;
+  align-content: start;
+  padding: 0.68rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: rgba(16, 26, 36, 0.72);
+}
+
+.astrolysis .archetype-slot-card > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  min-width: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(77, 232, 255, 0.22);
+}
+
+.astrolysis .archetype-slot-card h3 {
+  margin: 0;
+  color: var(--astro-line-strong);
+  font-family: var(--astro-mono);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.astrolysis .archetype-slot-card .empty-row {
+  margin: 0;
+}
+
+.astrolysis .feature-list {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.astrolysis .feature-title {
+  color: var(--astro-line-strong);
+  font-family: var(--astro-mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.astrolysis .feature-list article {
+  padding: 0.48rem 0.55rem;
+  border: 1px solid rgba(77, 232, 255, 0.22);
+  border-radius: 4px;
+  background: rgba(7, 16, 24, 0.66);
+}
+
+.astrolysis .feature-list article strong {
+  display: block;
+  margin-bottom: 0.22rem;
+  white-space: normal;
+  color: var(--astro-text);
+}
+
+.astrolysis .feature-list article p {
+  margin: 0;
+  color: var(--astro-text-soft);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.astrolysis .row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.astrolysis .icon-button {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.astrolysis .icon-button.danger:hover {
+  color: var(--astro-danger);
+  border-color: var(--astro-danger);
+}
+
+.astrolysis .empty-row {
+  padding: 0.85rem;
+  color: var(--astro-muted);
+  text-align: center;
+  font-style: italic;
+}
+
+.astrolysis .biography-panel textarea {
+  width: 100%;
+  min-height: 23rem;
+  resize: vertical;
+}
+
+/* ============================================================
+   Item sheets
+   ============================================================ */
+
+.astrolysis.sheet.item form,
+.astrolysis form.item-sheet {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: transparent;
+  scrollbar-width: thin;
+  scrollbar-color: var(--astro-line-strong) transparent;
 }
-.astrolysis.sheet.item .notes label {
+
+.astrolysis .item-identity {
+  gap: 0.72rem;
+  min-width: 0;
+  padding: 0.8rem;
+  border-bottom: var(--astro-border-strong);
+  background: rgba(11, 17, 24, 0.92);
+}
+
+.astrolysis .item-identity .profile-wrapper {
+  width: 4.7rem;
+  height: 4.7rem;
+  flex: 0 0 auto;
+}
+
+.astrolysis .item-title {
+  display: grid;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.astrolysis .item-title input {
+  width: 100%;
+  font-size: 1.12rem;
   text-transform: uppercase;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  font-weight: 700;
+}
+
+.astrolysis .item-body {
+  margin: 0.8rem;
+  padding: 0.85rem;
+}
+
+.astrolysis .form-grid {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.42fr) minmax(0, 1fr);
+  gap: 0.55rem 0.7rem;
+  align-items: center;
+}
+
+.astrolysis .form-grid input,
+.astrolysis .form-grid select {
+  width: 100%;
+}
+
+.astrolysis .compact-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.astrolysis .compact-grid label {
+  align-self: center;
+}
+
+.astrolysis .feature-editor {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.astrolysis .feature-editor article {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.58rem;
+  border: 1px solid rgba(77, 232, 255, 0.22);
+  border-radius: var(--astro-radius);
+  background: var(--astro-field);
+}
+
+.astrolysis .feature-editor-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.42rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.astrolysis .feature-editor-row input {
+  width: 100%;
+}
+
+.astrolysis .feature-editor textarea {
+  min-height: 4.8rem;
 }
 
 .astrolysis .formula-preview {
-  margin: 0.6rem 0;
-  padding: 0.55rem 0.7rem;
-  background: var(--astro-paper-3);
+  margin: 0.78rem 0;
+  padding: 0.62rem 0.72rem;
   border: var(--astro-border);
-  font-size: 0.75rem;
-  letter-spacing: 0.5px;
-  line-height: 1.45;
+  border-radius: var(--astro-radius);
+  background: var(--astro-field);
+  color: var(--astro-text-soft);
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
-.astrolysis .formula-preview code {
-  background: var(--astro-edge);
-  color: var(--astro-paper);
-  padding: 0 0.3rem;
-  font-family: var(--astro-mono);
-}
+
 .astrolysis .formula-preview strong {
-  color: var(--astro-acid);
-  font-weight: 700;
+  color: var(--astro-accent);
+}
+
+.astrolysis .notes-label {
+  display: block;
+  margin: 0.8rem 0 0.35rem;
+}
+
+.astrolysis .item-body textarea {
+  width: 100%;
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.astrolysis form.builder-sheet {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(77, 232, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77, 232, 255, 0.05) 1px, transparent 1px),
+    transparent;
+  background-size: 32px 32px;
+}
+
+.astrolysis .builder-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.72rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.85rem;
+  border-bottom: var(--astro-border-strong);
+  background: rgba(11, 17, 24, 0.94);
+}
+
+.astrolysis .builder-hero > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.astrolysis .builder-hero input {
+  width: 100%;
+  font-size: 1.18rem;
+  text-transform: uppercase;
+}
+
+.astrolysis .builder-body {
+  display: grid;
+  gap: 0.72rem;
+  min-height: 0;
+  padding: 0.85rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--astro-line-strong) transparent;
+}
+
+.astrolysis .builder-panel {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.72rem;
+  border: var(--astro-border);
+  border-radius: var(--astro-radius);
+  background: rgba(11, 17, 24, 0.84);
+  box-shadow: 0 16px 34px var(--astro-shadow);
+}
+
+.astrolysis .builder-panel > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  min-width: 0;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(77, 232, 255, 0.22);
+}
+
+.astrolysis .builder-panel h2 {
+  margin: 0;
+  color: var(--astro-line-strong);
+  font-family: var(--astro-mono);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.astrolysis .builder-panel output {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--astro-accent);
+  font-family: var(--astro-mono);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.astrolysis .builder-panel > header button {
+  flex: 0 0 auto;
+}
+
+.astrolysis .builder-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.astrolysis .builder-grid label,
+.astrolysis .builder-field,
+.astrolysis .boost-grid label {
+  display: grid;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.astrolysis .builder-grid span,
+.astrolysis .builder-field span,
+.astrolysis .boost-grid span {
+  color: var(--astro-muted);
+  font-family: var(--astro-mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.astrolysis .builder-grid input,
+.astrolysis .builder-grid select,
+.astrolysis .builder-field input,
+.astrolysis .builder-field textarea,
+.astrolysis .boost-grid input {
+  width: 100%;
+}
+
+.astrolysis .builder-field textarea,
+.astrolysis .description-panel textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.astrolysis .boost-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.astrolysis .boost-grid input {
+  color: var(--astro-accent);
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.astrolysis.npc .npc-identity-bar {
+  grid-template-columns: minmax(12rem, 1fr) minmax(8rem, 0.5fr) 4.2rem 4.2rem 2.5rem;
+}
+
+.astrolysis .npc-inline-field {
+  display: grid;
+  gap: 0.16rem;
+  min-width: 0;
+}
+
+.astrolysis .npc-inline-field label {
+  color: var(--astro-muted);
+  font-family: var(--astro-mono);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.astrolysis .npc-inline-field input {
+  width: 100%;
+}
+
+.astrolysis .npc-summary-card .defense-list strong {
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+/* ============================================================
+   Responsive / narrow sheet protection
+   ============================================================ */
+
+@container (max-width: 720px) {
+  .astrolysis.sheet form.character-sheet {
+    grid:
+      "identity" auto
+      "tabs" auto
+      "rail" auto
+      "body" minmax(18rem, 1fr) / minmax(0, 1fr);
+  }
+
+  .astrolysis .status-rail {
+    border-right: 0;
+    border-bottom: var(--astro-border-strong);
+  }
+
+  .astrolysis .rail-scroll {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    max-height: 18rem;
+  }
+
+  .astrolysis .portrait-panel,
+  .astrolysis .rail-card {
+    margin: 0;
+  }
+
+  .astrolysis .portrait-panel .profile-wrapper {
+    max-height: 10rem;
+  }
+
+  .astrolysis .sheet-tabs {
+    align-items: stretch;
+  }
+
+  .astrolysis .sheet-tab span {
+    display: none;
+  }
+
+  .astrolysis .console-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .astrolysis .archetype-slot-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .astrolysis .row-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .astrolysis .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .astrolysis .compact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .astrolysis .builder-grid,
+  .astrolysis .boost-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .astrolysis.npc .npc-identity-bar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .astrolysis.sheet form.character-sheet {
+    grid:
+      "identity" auto
+      "tabs" auto
+      "rail" auto
+      "body" minmax(18rem, 1fr) / minmax(0, 1fr);
+  }
 }

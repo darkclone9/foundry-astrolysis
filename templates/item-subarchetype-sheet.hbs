@@ -1,7 +1,7 @@
-<form class="astrolysis builder-sheet archetype-builder" autocomplete="off">
+<form class="astrolysis builder-sheet archetype-builder subarchetype-builder" autocomplete="off">
   <header class="builder-hero">
     <div>
-      <span class="eyebrow">{{labels.ArchetypeBuilder}}</span>
+      <span class="eyebrow">{{labels.SubArchetypeBuilder}}</span>
       <input type="text" name="name" value="{{item.name}}" placeholder="{{labels.Name}}" />
     </div>
     <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="{{labels.ToggleTheme}}" aria-label="{{labels.ToggleTheme}}">
@@ -16,6 +16,11 @@
         <output>{{statBoostLabel}}</output>
       </header>
       <div class="builder-grid">
+        <label>
+          <span>{{labels.ParentArchetype}}</span>
+          <input type="text" name="system.parentArchetype" value="{{system.parentArchetype}}" />
+        </label>
+
         <label>
           <span>{{labels.Category}}</span>
           <select name="system.category">

@@ -1,8 +1,8 @@
 {
   "id": "astrolysis",
   "title": "Astrolysis",
-  "description": "Dice-pool sci-fi/psionic RPG. Roll {Base}d{Skill die} vs DC = 5 + target stat.",
-  "version": "0.3.0",
+  "description": "Dice-pool sci-fi/psionic RPG. Roll a base-sized pool using the referenced base or skill die.",
+  "version": "0.5.0",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
@@ -17,19 +17,22 @@
   ],
   "documentTypes": {
     "Actor": {
-      "character": { "htmlFields": ["biography"] }
+      "character": { "htmlFields": ["biography"] },
+      "npc":       { "htmlFields": ["biography", "tactics"] }
     },
     "Item": {
       "archetype": { "htmlFields": ["description"] },
+      "subarchetype": { "htmlFields": ["description"] },
       "skill":     { "htmlFields": ["description"] },
       "weapon":    { "htmlFields": ["description"] },
+      "armor":     { "htmlFields": ["description"] },
       "inventory": { "htmlFields": ["description"] }
     }
   },
   "primaryTokenAttribute": "health",
   "secondaryTokenAttribute": "madness",
   "grid": { "distance": 5, "units": "ft" },
-  "initiative": "1d20 + @focus",
+  "initiative": "1d4",
 
   "url": "https://github.com/darkclone9/foundry-astrolysis",
   "manifest": "https://github.com/darkclone9/foundry-astrolysis/raw/main/system.json",

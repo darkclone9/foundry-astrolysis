@@ -1,4 +1,4 @@
-<form class="astrolysis item-sheet weapon-sheet" autocomplete="off">
+<form class="astrolysis item-sheet armor-sheet" autocomplete="off">
   <header class="item-identity">
     <button type="button" class="profile-wrapper image-control" data-action="editImage" data-tooltip="{{labels.ChangeImage}}" aria-label="{{labels.ChangeImage}}">
       <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" />
@@ -21,29 +21,20 @@
       <h2>{{labels.ItemDetails}}</h2>
     </header>
     <div class="form-grid">
-      <label>{{labels.Base}}</label>
-      <select name="system.base">
-        {{#each baseOptions as |option|}}
-        <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-        {{/each}}
-      </select>
+      <label>{{labels.Equipped}}</label>
+      <input type="checkbox" name="system.equipped" {{checked system.equipped}} />
 
-      <label>{{labels.Training}}</label>
-      <select name="system.training">
-        {{#each trainingOptions as |option|}}
-        <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}} (d{{option.size}})</option>
-        {{/each}}
-      </select>
+      <label>{{labels.ArmorDefense}}</label>
+      <input type="number" name="system.defenseBonus" value="{{system.defenseBonus}}" />
 
-      <label>{{labels.DamageBonus}}</label>
-      <input type="number" name="system.damageBonus" value="{{system.damageBonus}}" />
+      <label>{{labels.MaxDexBonus}}</label>
+      <input type="number" name="system.maxDexBonus" value="{{system.maxDexBonus}}" />
+
+      <label>{{labels.ArmorPenalty}}</label>
+      <input type="number" name="system.armorPenalty" value="{{system.armorPenalty}}" />
 
       <label>{{labels.Bulk}}</label>
       <input type="number" name="system.bulk" value="{{system.bulk}}" min="0" step="0.1" />
-    </div>
-
-    <div class="formula-preview">
-      <strong>{{labels.Damage}}</strong> - {{weaponPreview.formula}}
     </div>
 
     <label class="notes-label">{{labels.Description}}</label>

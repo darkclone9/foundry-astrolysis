@@ -1,6 +1,13 @@
-import { CharacterData, ArchetypeData, SkillData, WeaponData, InventoryData, ASTROLYSIS_CONST } from "./module/data-models.mjs";
-import { CharacterSheet, ItemSheetAstrolysis } from "./module/sheets.mjs";
+import { CharacterData, NPCData, ArchetypeData, SubArchetypeData, SkillData, WeaponData, ArmorData, InventoryData, ASTROLYSIS_CONST } from "./module/data-models.mjs";
+import { CharacterSheet, NPCSheet, ItemSheetAstrolysis } from "./module/sheets.mjs";
 import { rollAstrolysisCheck } from "./module/roll.mjs";
+import {
+  getAstrolysisInitiativeFormula,
+  patchAstrolysisCombat,
+  registerAstrolysisCombatHooks,
+  rollActorInitiativeToCombat,
+  rollAstrolysisInitiative
+} from "./module/combat.mjs";
 
 Hooks.once("init", () => {
   console.log("Astrolysis | Initializing system");
@@ -22,10 +29,16 @@ Hooks.once("init", () => {
   });
 
   CONFIG.Actor.dataModels.character = CharacterData;
+  CONFIG.Actor.dataModels.npc       = NPCData;
   CONFIG.Item.dataModels.archetype  = ArchetypeData;
+  CONFIG.Item.dataModels.subarchetype = SubArchetypeData;
   CONFIG.Item.dataModels.skill      = SkillData;
   CONFIG.Item.dataModels.weapon     = WeaponData;
+  CONFIG.Item.dataModels.armor      = ArmorData;
   CONFIG.Item.dataModels.inventory  = InventoryData;
+
+  patchAstrolysisCombat();
+  registerAstrolysisCombatHooks();
 
   const sheetsApi = foundry.applications.apps.DocumentSheetConfig;
 
@@ -33,54 +46,25 @@ Hooks.once("init", () => {
   sheetsApi.registerSheet(Actor, "astrolysis", CharacterSheet, {
     types: ["character"], makeDefault: true, label: "Astrolysis Character Sheet"
   });
+  sheetsApi.registerSheet(Actor, "astrolysis", NPCSheet, {
+    types: ["npc"], makeDefault: true, label: "Astrolysis NPC Sheet"
+  });
 
   sheetsApi.unregisterSheet(Item, "core", foundry.applications.sheets.ItemSheetV2);
   sheetsApi.registerSheet(Item, "astrolysis", ItemSheetAstrolysis, {
-    types: ["archetype", "skill", "weapon", "inventory"],
+    types: ["archetype", "subarchetype", "skill", "weapon", "armor", "inventory"],
     makeDefault: true,
     label: "Astrolysis Item Sheet"
   });
 
   globalThis.astrolysis = {
     rollAstrolysisCheck,
+    rollAstrolysisInitiative,
+    rollActorInitiativeToCombat,
+    getAstrolysisInitiativeFormula,
     const: ASTROLYSIS_CONST,
-    models: { CharacterData, ArchetypeData, SkillData, WeaponData, InventoryData }
+    models: { CharacterData, NPCData, ArchetypeData, SubArchetypeData, SkillData, WeaponData, ArmorData, InventoryData }
   };
-});
-
-/* ------------------------------------------------------------------ */
-/*  Combat: initiative re-rolls every round; last-rolls clear too     */
-/* ------------------------------------------------------------------ */
-
-async function rerollInitiative(combat) {
-  if (!combat) return;
-  // resetAll() clears initiative on every combatant; rollAll() rolls fresh
-  // using the system.json `initiative` formula (currently "1d20 + @focus").
-  await combat.resetAll();
-  await combat.rollAll();
-}
-
-async function clearLastRollsForAll(combat) {
-  for (const c of combat.combatants) {
-    const actor = c.actor;
-    if (!actor) continue;
-    if (actor.getFlag("astrolysis", "lastRolls")) {
-      await actor.unsetFlag("astrolysis", "lastRolls");
-    }
-  }
-}
-
-// On the very first round of a combat (combat starts).
-Hooks.on("combatStart", async (combat) => {
-  if (!game.user.isGM) return;
-  await rerollInitiative(combat);
-});
-
-// On every subsequent round change.
-Hooks.on("combatRound", async (combat, updateData, options) => {
-  if (!game.user.isGM) return;
-  await clearLastRollsForAll(combat);
-  await rerollInitiative(combat);
 });
 
 /* ------------------------------------------------------------------ */

@@ -1,38 +1,55 @@
-<form class="astrolysis inventory-sheet">
-  <header class="sheet-header">
-    <div class="profile-wrapper" data-action="editImage" data-tooltip="Change image">
+<form class="astrolysis item-sheet inventory-sheet" autocomplete="off">
+  <header class="item-identity">
+    <button type="button" class="profile-wrapper image-control" data-action="editImage" data-tooltip="{{labels.ChangeImage}}" aria-label="{{labels.ChangeImage}}">
       <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" />
-      <div class="profile-overlay">
-        <span class="upload-icon">&#x21E7;</span>
-        <span class="upload-label">Upload</span>
-      </div>
+      <span class="profile-overlay" aria-hidden="true">
+        <i class="fa-solid fa-camera"></i>
+        <span>{{labels.ChangeImage}}</span>
+      </span>
+    </button>
+    <div class="item-title">
+      <span class="eyebrow">{{itemTypeLabel}}</span>
+      <input type="text" name="name" value="{{item.name}}" placeholder="{{labels.Name}}" />
     </div>
-    <div class="header-fields">
-      <div class="name-row">
-        <input type="text" name="name" value="{{item.name}}" placeholder="Name" />
-        <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="Toggle theme">
-          {{#if (eq theme "dark")}}&#x2600;{{else}}&#x263E;{{/if}}
-        </button>
-      </div>
-    </div>
+    <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="{{labels.ToggleTheme}}" aria-label="{{labels.ToggleTheme}}">
+      {{#if (eq theme "dark")}}<i class="fa-solid fa-sun"></i>{{else}}<i class="fa-solid fa-moon"></i>{{/if}}
+    </button>
   </header>
 
-  <section class="sheet-body">
-    <div class="stat-row">
-      <label>Quantity</label>
+  <section class="item-body">
+    <header class="panel-heading">
+      <h2>{{labels.ItemDetails}}</h2>
+    </header>
+    <div class="form-grid">
+      <label>{{labels.ItemKind}}</label>
+      <select name="system.kind">
+        {{#each inventoryKindOptions as |option|}}
+        <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+        {{/each}}
+      </select>
+
+      <label>{{labels.Quantity}}</label>
       <input type="number" name="system.quantity" value="{{system.quantity}}" min="0" />
-    </div>
-    <div class="stat-row">
-      <label>Weight (lb)</label>
-      <input type="number" name="system.weight" value="{{system.weight}}" step="0.1" min="0" />
-    </div>
-    <div class="stat-row">
-      <label>Equipped</label>
+
+      <label>{{labels.Bulk}}</label>
+      <input type="number" name="system.bulk" value="{{bulkValue}}" step="0.1" min="0" />
+
+      <label>{{labels.Equipped}}</label>
       <input type="checkbox" name="system.equipped" {{checked system.equipped}} />
+
+      {{#if isArmor}}
+      <label>{{labels.ArmorDefense}}</label>
+      <input type="number" name="system.defenseBonus" value="{{system.defenseBonus}}" />
+
+      <label>{{labels.MaxDexBonus}}</label>
+      <input type="number" name="system.maxDexBonus" value="{{system.maxDexBonus}}" />
+
+      <label>{{labels.ArmorPenalty}}</label>
+      <input type="number" name="system.armorPenalty" value="{{system.armorPenalty}}" />
+      {{/if}}
     </div>
-    <div class="notes">
-      <label>Description</label>
-      <textarea name="system.description">{{system.description}}</textarea>
-    </div>
+
+    <label class="notes-label">{{labels.Description}}</label>
+    <textarea name="system.description">{{system.description}}</textarea>
   </section>
 </form>

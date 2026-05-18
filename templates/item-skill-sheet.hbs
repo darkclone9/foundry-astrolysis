@@ -1,58 +1,61 @@
-<form class="astrolysis skill-sheet">
-  <header class="sheet-header">
-    <div class="profile-wrapper" data-action="editImage" data-tooltip="Change image">
-      <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" />
-      <div class="profile-overlay">
-        <span class="upload-icon">&#x21E7;</span>
-        <span class="upload-label">Upload</span>
-      </div>
+<form class="astrolysis builder-sheet skill-builder" autocomplete="off">
+  <header class="builder-hero">
+    <div>
+      <span class="eyebrow">{{labels.SkillBuilder}}</span>
+      <input type="text" name="name" value="{{item.name}}" placeholder="{{labels.FeatureName}}" />
     </div>
-    <div class="header-fields">
-      <div class="name-row">
-        <input type="text" name="name" value="{{item.name}}" placeholder="Name" />
-        <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="Toggle theme">
-          {{#if (eq theme "dark")}}&#x2600;{{else}}&#x263E;{{/if}}
-        </button>
-      </div>
-    </div>
+    <button type="button" class="theme-toggle" data-action="toggleTheme" data-tooltip="{{labels.ToggleTheme}}" aria-label="{{labels.ToggleTheme}}">
+      {{#if (eq theme "dark")}}<i class="fa-solid fa-sun"></i>{{else}}<i class="fa-solid fa-moon"></i>{{/if}}
+    </button>
   </header>
 
-  <section class="sheet-body">
-    <div class="stat-row">
-      <label>Base</label>
-      <select name="system.base">
-        {{#each const.BASE_KEYS as |k|}}
-        <option value="{{k}}" {{#if (eq k ../system.base)}}selected{{/if}}>{{k}}</option>
-        {{/each}}
-      </select>
-    </div>
-    <div class="stat-row">
-      <label>Training</label>
-      <select name="system.training">
-        {{#each const.TRAINING_DIE as |size key|}}
-        <option value="{{key}}" {{#if (eq key ../system.training)}}selected{{/if}}>{{key}} (d{{size}})</option>
-        {{/each}}
-      </select>
-    </div>
-    <div class="stat-row">
-      <label>Targets Defense</label>
-      <select name="system.defense">
-        <option value="" {{#if (eq "" system.defense)}}selected{{/if}}>&mdash; static DC 5 &mdash;</option>
-        {{#each const.BASE_KEYS as |k|}}
-        <option value="{{k}}" {{#if (eq k ../system.defense)}}selected{{/if}}>{{k}}</option>
-        {{/each}}
-      </select>
-    </div>
-    <div class="formula-preview">
-      {{#if system.defense}}
-        Rolls vs a target's <strong>{{system.defense}}</strong> defense (DC = 5 + target's {{system.defense}}). Select a token before rolling.
-      {{else}}
-        Static DC of 5 (no target needed).
-      {{/if}}
-    </div>
-    <div class="notes">
-      <label>Description</label>
-      <textarea name="system.description">{{system.description}}</textarea>
-    </div>
+  <section class="builder-body">
+    <section class="builder-panel roll-profile-panel">
+      <header>
+        <h2>{{labels.RollProfile}}</h2>
+        <output>{{skillPreview.formula}}</output>
+      </header>
+      <div class="builder-grid">
+        <label>
+          <span>{{labels.Base}}</span>
+          <select name="system.base">
+            {{#each baseOptions as |option|}}
+            <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label>
+          <span>{{labels.Training}}</span>
+          <select name="system.training">
+            {{#each trainingOptions as |option|}}
+            <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}} (d{{option.size}})</option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label>
+          <span>{{labels.CustomModifier}}</span>
+          <input type="number" name="system.modifier" value="{{system.modifier}}" />
+        </label>
+      </div>
+      <div class="formula-preview">
+        <strong>{{labels.RollFormula}}</strong> - {{skillPreview.formula}}
+      </div>
+    </section>
+
+    <section class="builder-panel feature-details-panel">
+      <header>
+        <h2>{{labels.FeatureDetails}}</h2>
+      </header>
+      <label class="builder-field">
+        <span>{{labels.Specialization}}</span>
+        <input type="text" name="system.specialization" value="{{system.specialization}}" />
+      </label>
+      <label class="builder-field">
+        <span>{{labels.FeatureText}}</span>
+        <textarea name="system.description">{{system.description}}</textarea>
+      </label>
+    </section>
   </section>
 </form>
